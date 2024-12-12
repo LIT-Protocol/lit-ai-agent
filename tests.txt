@@ -1,0 +1,47 @@
+Swapping Policy:
+
+const allowedTokens = [
+    "0x4200000000000000000000000000000000000006", // WETH
+    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC
+    "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf", // Coinbase Wrapped BTC
+];
+
+const maxAmount = ethers.utils.parseUnits("0.001", 18);
+
+Swap Tests:
+
+Swap 100 USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) to WETH (0x4200000000000000000000000000000000000006) <- Failure Expected (Invalid Amount)
+Swap .0001 Virtuals (0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b) to WETH (0x4200000000000000000000000000000000000006) <- Failure Expected (Invalid Token)
+Swap .0001 WETH (0x4200000000000000000000000000000000000006) to Coinbase Wrapped BTC (0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf) <- Success Expected
+
+Note: Errors are provided from the Lit Action execution, not from the AI.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Send Policy:
+
+const permittedAddresses = [
+    "0xF9B6C15729958BF84683F49B7bb847729bA36DC9", // Trusted Wallet
+];
+
+const maxAmount = ethers.utils.parseUnits("0.001", 18);
+
+Send Tests:
+
+Send 1 ETH to 0xF9B6C15729958BF84683F49B7bb847729bA36DC9 <- Failure Expected (Invalid Amount)
+Send .00001 ETH to 0x7E07D8cD4c35bCBc6053045C41F6a95F71798Bfb <- Failure Expected (Invalid Address)
+Send .00001 ETH to 0xF9B6C15729958BF84683F49B7bb847729bA36DC9 (Trusted Wallet) <- Success Expected
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Unwrap Policy:
+
+const maxAmount = ethers.utils.parseUnits("0.001", 18);
+
+Unwrap Tests:
+
+Unwrap .1 WETH <- Failure Expected (Invalid Amount)
+Unwrap .00001 WETH <- Success Expected
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
