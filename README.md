@@ -25,8 +25,8 @@ You'll need the following environment variables set up:
      - PKP minting costs
      - Capacity Credits minting costs
    - Requirements:
-     - Small amount of ETH on Base mainnet for gas fees
-     - tstLPX tokens on Chronicle Yellowstone network (available from the [faucet](https://chronicle-yellowstone-faucet.getlit.dev/))
+     - A small amount of ETH on Base mainnet for gas fees
+     - `tstLPX` tokens on [Chronicle Yellowstone](https://developer.litprotocol.com/connecting-to-a-lit-network/lit-blockchains/chronicle-yellowstone) blockchain (available from the [faucet](https://chronicle-yellowstone-faucet.getlit.dev/))
 
 2. `ETHEREUM_PRIVATE_KEY_2`
    - On Base mainnet:
@@ -36,9 +36,11 @@ You'll need the following environment variables set up:
 
 ### API Keys
 - `OPENAI_API_KEY`
-  - Required for the `gpt-4o-mini` model (or modify code to use a different model)
+  - Required for the OpenAI GPT-4o-mini model execution
+    - Please ensure this model is enabled on your OpenAI API key
   - Used for parsing intent and executing actions
-  - Note: Any LLM provider can be used as an alternative
+  - If you'd like to use a different model or provider, you can modify [`./src/utils/subAgentUtils.ts`](./src/utils/subAgentUtils.ts).
+
 
 - `BASESCAN_API_KEY`
   - Required for contract verification on BaseScan
@@ -83,11 +85,7 @@ Implements a 2/2 multisig Safe for PKP action authentication.
 1. Two owners sign an authentication message
 2. Signatures are passed to Lit nodes' TEE (Trusted Execution Environment)
 3. Lit nodes verify signatures against Safe owners
-4. Session Signatures are generated for PKP action execution
-
-#### Components
-- Session Signatures for PKP authentication
-- Capacity delegation for rate limiting
+4. Session Signatures are generated, allowing the PKP to execute Lit Actions
 
 ### Available Tools
 
