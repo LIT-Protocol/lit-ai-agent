@@ -4,6 +4,12 @@ This example demonstrates how Lit Actions can be used to create tools and polici
 
 The following Lit Action policies are immutable (deployed to IPFS), and require governance approval (via SAFE) in order to be executed by the agent.
 
+## Overview Video
+
+
+https://github.com/user-attachments/assets/ae75ca55-9f1c-4707-911d-2b6d749be600
+
+
 ## Prerequisites
 
 You'll need the following environment variables set up:
