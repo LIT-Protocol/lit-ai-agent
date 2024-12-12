@@ -1,6 +1,8 @@
 # Lit AI Agent
 
-This code example demonstrates how Lit Actions can be leveraged to create an AI agent that performs actions on behalf of users or other agents. These actions are immutable and only executed when approved by the implemented governance system. In this case, we use a 2/2 multisig Safe to authenticate the actions.
+This example demonstrates how Lit Actions can be used to create tools and policies for on-chain agents. Tools allow agents to perform specific actions (i.e. "swap ETH for ARB") while policies dictate how a given tool is used (i.e. "If swap amount is greater than $100, require human approval").
+
+The following Lit Action policies are immutable (deployed to IPFS), and require governance approval (via SAFE) in order to be executed by the agent.
 
 ## Prerequisites
 
@@ -126,7 +128,7 @@ Implements a 2/2 multisig Safe for PKP action authentication.
 
 ### Lit Actions
 Pre-deployed actions with IPFS CIDs (source code available in `src/litActions/`):
-- [`customLitAction.ts`](./src/litActions/customLitAction.ts): Custom action implementation
+- [`litActionAuth.ts`](./src/litActions/litActionAuth.ts): Custom multisig authentication
 - [`litActionSwap.ts`](./src/litActions/litActionSwap.ts): Token swap functionality
 - [`litActionSend.ts`](./src/litActions/litActionSend.ts): ETH transfer functionality
 - [`litActionUnwrap.ts`](./src/litActions/litActionUnwrap.ts): WETH unwrapping functionality
