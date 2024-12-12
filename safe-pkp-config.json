@@ -1,0 +1,23 @@
+{
+  "pkp": {
+    "tokenId": "0x02ec3a74937ffcad10c337d16936cb9936da93d2f0ba17bed95627a015cd6952",
+    "publicKey": "044c87bc58a7ab0808302127a0ffdd3fc28f30d0f5605f7de1fa7dca16781fbed9692827135a4c6e7c6b1b5e9ee091089ebc64a6624935e2b2683c0f7b420779f5",
+    "ethAddress": "0xe2EB1D1942fdEA85D2EF09a46ea7551F634fA47E"
+  },
+  "safeAddress": "0x8E9d88909d122d09675737b259893713c2CAeEb1",
+  "pkpToolsAddress": "0x98785B17565E1FD715d3f8715782A91d1A0933e1",
+  "chainId": 8453,
+  "owners": [
+    "0x27B569c7eFa868Cf9C074f90F617742D2841a692",
+    "0xF9B6C15729958BF84683F49B7bb847729bA36DC9"
+  ],
+  "threshold": 2,
+  "network": {
+    "name": "base",
+    "rpcUrl": "https://mainnet.base.org",
+    "chainId": 8453
+  },
+  "capacityTokenId": "70883",
+  "lastUpdated": "2024-12-12T00:38:08.504Z",
+  "deploymentTimestamp": "2024-12-12T00:37:43.622Z"
+}

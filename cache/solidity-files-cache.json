@@ -1,0 +1,41 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\Andrew\\Desktop\\Lit\\12-10debug\\Lit\\toTest\\lit-ai-agent\\contracts\\PKPTools.sol": {
+      "lastModificationDate": 1733963654913,
+      "contentHash": "f95551d56509ea3b08ebda0bf813ede6",
+      "sourceName": "contracts/PKPTools.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "PKPTools"
+      ]
+    }
+  }
+}
