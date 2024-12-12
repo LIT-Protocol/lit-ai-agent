@@ -103,36 +103,36 @@ Implements a 2/2 multisig Safe for PKP action authentication.
 - Transaction verification
 - Balance validation
 
-## Project Structure
+## Project Files Reference
 
 ### Core Logic
-- `./src/index.ts`: Main application logic
+- [`./src/index.ts`](./src/index.ts): Main application logic
 
 ### Utility Functions
-- `./src/utils/contractUtils.ts`: Contract interaction utilities
+- [`./src/utils/contractUtils.ts`](./src/utils/contractUtils.ts): Contract interaction utilities
   - Tool permission management
   - Contract queries
 
-- `./src/utils/deployUtils.ts`: Deployment utilities
+- [`./src/utils/deployUtils.ts`](./src/utils/deployUtils.ts): Deployment utilities
   - Contract deployment
   - Safe transaction handling
   - Balance checking
 
-- `./src/utils/saveInfoUtils.ts`: Configuration management
+- [`./src/utils/saveInfoUtils.ts`](./src/utils/saveInfoUtils.ts): Configuration management
   - Config saving/loading
   - Deployment verification
 
-- `./src/utils/subAgentUtils.ts`: Intent analysis and action matching
+- [`./src/utils/subAgentUtils.ts`](./src/utils/subAgentUtils.ts): Intent analysis and action matching
 
 ### Lit Actions
 Pre-deployed actions with IPFS CIDs (source code available in `src/litActions/`):
-- `customLitAction.ts`: Custom action implementation
-- `litActionSwap.ts`: Token swap functionality
-- `litActionCode.ts`: ETH transfer functionality
-- `litActionUnwrap.ts`: WETH unwrapping functionality
+- [`customLitAction.ts`](./src/litActions/customLitAction.ts): Custom action implementation
+- [`litActionSwap.ts`](./src/litActions/litActionSwap.ts): Token swap functionality
+- [`litActionSend.ts`](./src/litActions/litActionSend.ts): ETH transfer functionality
+- [`litActionUnwrap.ts`](./src/litActions/litActionUnwrap.ts): WETH unwrapping functionality
 
 ### Smart Contracts
-- `./contracts/PKPTools.sol`: PKP Tools contract implementation
+- [`./contracts/PKPTools.sol`](./contracts/PKPTools.sol): PKP Tools contract implementation
 
 ### Verification
-- `./scripts/verifyContract.ts`: BaseScan contract verification script
+- [`./scripts/verify.cjs`](./scripts/verify.cjs): BaseScan contract verification script
