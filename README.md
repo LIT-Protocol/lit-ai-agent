@@ -2,6 +2,10 @@
 
 This code example demonstrates how Lit Actions can be leveraged to create an AI agent that performs actions on behalf of users or other agents. These actions are immutable and only executed when approved by the implemented governance system. In this case, we use a 2/2 multisig Safe to authenticate the actions.
 
+## Overview
+
+https://github.com/user-attachments/assets/1889dffd-d2fd-46aa-ba1a-f3da666b875a
+
 ## Prerequisites
 
 You'll need the following environment variables set up:
