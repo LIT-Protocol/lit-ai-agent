@@ -7,16 +7,50 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
 
+// Function to generate the action string
+async function generateActionString() {
+  // Build the action file to get its contents
+  const result = await esbuild.build({
+    entryPoints: [join(rootDir, "src", "uniswapAction.ts")],
+    bundle: true, // Enable bundling to resolve imports
+    write: false,
+    format: "esm",
+    target: "esnext",
+    platform: "neutral",
+    minify: false,
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+  });
+
+  const actionCode = result.outputFiles[0].text;
+
+  // Extract everything between the var assignment and the export statement
+  const startMatch = actionCode.indexOf("var uniswapAction_default = ");
+  const endMatch = actionCode.indexOf("export {");
+
+  if (startMatch === -1 || endMatch === -1) {
+    console.error("Compiled code:", actionCode);
+    throw new Error("Could not find function boundaries in compiled code");
+  }
+
+  // Extract the function definition (excluding the variable assignment)
+  const functionBody = actionCode
+    .slice(startMatch + "var uniswapAction_default = ".length, endMatch)
+    .trim()
+    .replace(/;$/, ""); // Remove trailing semicolon if present
+
+  // Create self-executing function
+  return `(${functionBody})();`;
+}
+
 // Function to generate the index files
 async function generateIndexFiles(ipfsMetadata = {}) {
-  // Import the action string directly from the compiled source
-  const { uniswapLitAction, uniswapLitActionDescription } = await import(
-    "../dist/litAction.js"
-  );
+  const actionString = await generateActionString();
 
   const indexContent = `
-export const uniswapLitActionDescription = ${JSON.stringify(uniswapLitActionDescription)};
-export const uniswapLitAction = ${JSON.stringify(uniswapLitAction)};
+export const uniswapLitActionDescription = "Swap tokens using Uniswap V3";
+export const uniswapLitAction = ${JSON.stringify(actionString)};
 export const uniswapMetadata = ${JSON.stringify(ipfsMetadata)};
 `;
 
@@ -41,7 +75,7 @@ export declare const uniswapMetadata: {
   // Write the action string to a separate file for IPFS upload
   await fs.writeFile(
     join(rootDir, "dist", "lit-action-string.js"),
-    uniswapLitAction
+    actionString
   );
 }
 
@@ -50,19 +84,6 @@ async function build() {
   try {
     // Ensure dist directory exists
     await fs.mkdir(join(rootDir, "dist"), { recursive: true });
-
-    // First build the litAction.ts file
-    await esbuild.build({
-      entryPoints: [join(rootDir, "src", "litAction.ts")],
-      bundle: true,
-      platform: "node",
-      format: "esm",
-      target: "esnext",
-      outfile: join(rootDir, "dist", "litAction.js"),
-      define: {
-        "process.env.NODE_ENV": '"production"',
-      },
-    });
 
     // Read the IPFS metadata if it exists
     let ipfsMetadata = {};
