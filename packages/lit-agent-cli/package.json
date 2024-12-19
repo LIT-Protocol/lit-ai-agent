@@ -6,6 +6,7 @@
     "start": "tsx src/index.ts"
   },
   "dependencies": {
+    "lit-agent-tool-uniswap": "*",
     "lit-agent-toolkit": "*"
   },
   "devDependencies": {
