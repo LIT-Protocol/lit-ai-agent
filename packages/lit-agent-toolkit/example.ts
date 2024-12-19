@@ -392,8 +392,6 @@ export const runSubAgent = async (): Promise<string> => {
                 rpcUrl: BASE_RPC_URL!,
                 chainId: BASE_CHAIN_ID,
               },
-              publicKey: pkp.publicKey,
-              pkpEthAddress: pkp.ethAddress,
             };
 
             const response = await litNodeClient.executeJs({
@@ -402,6 +400,7 @@ export const runSubAgent = async (): Promise<string> => {
               jsParams: {
                 ...baseParams,
                 params: analysis,
+                pkp
               },
             });
 
