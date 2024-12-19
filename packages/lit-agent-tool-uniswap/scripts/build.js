@@ -140,7 +140,7 @@ export * from "./policy";
   await Promise.all([
     fs.writeFile(join(rootDir, "dist", "index.js"), jsContent),
     fs.writeFile(join(rootDir, "dist", "index.d.ts"), dtsContent),
-    fs.writeFile(join(rootDir, "dist", "lit-action.js"), actionString),
+    fs.writeFile(join(rootDir, "dist", "litAction.js"), actionString),
   ]);
 }
 
