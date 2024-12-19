@@ -6,7 +6,7 @@
     "lit-agent": "./dist/cli.js"
   },
   "scripts": {
-    "start": "tsx src/cli.ts",
+    "start": "dotenvx run -- tsx src/cli.ts",
     "build": "tsc",
     "dev": "tsx watch src/cli.ts"
   },

@@ -4,6 +4,7 @@ import {
   getLitContractsClient,
   getPermittedActionsForPkp,
 } from "lit-agent-toolkit";
+
 import { InitConfig } from "../../commands/init";
 
 const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
