@@ -46,7 +46,9 @@ export default async () => {
       tokenIn = ethers.utils.getAddress(params.tokenIn);
       tokenOut = ethers.utils.getAddress(params.tokenOut);
     } catch (error) {
-      throw new Error(`Invalid token address: ${error.message}`);
+      throw new Error(
+        `Invalid token address: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
 
     const UNISWAP_V3_ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
@@ -130,7 +132,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Failed to decode policy: ${error.message}`,
+          error: `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -197,14 +199,7 @@ export default async () => {
 
     const amountOutMin = ethers.BigNumber.from(0);
 
-    // Get fee data for EIP-1559 transaction
-    const feeData = await ethersProvider.getFeeData();
-    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
-      throw new Error("Failed to get fee data from provider");
-    }
-
     const approvalTx = {
-      type: 2, // EIP-1559
       to: normalizedTokenIn,
       data: tokenInterface.encodeFunctionData("approve", [
         UNISWAP_V3_ROUTER,
@@ -212,8 +207,7 @@ export default async () => {
       ]),
       value: "0x0",
       gasLimit: ethers.utils.hexlify(100000),
-      maxFeePerGas: feeData.maxFeePerGas.mul(2).toHexString(), // Double the suggested fee
-      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas.mul(2).toHexString(), // Double the suggested priority fee
+      gasPrice: (await ethersProvider.getGasPrice()).mul(2).toHexString(),
       nonce: await ethersProvider.getTransactionCount(pkpEthAddress),
       chainId: chainInfo.chainId,
     };
@@ -228,7 +222,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Invalid approval transaction: ${error.message}`,
+          error: `Invalid approval transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -248,7 +242,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error signing approval transaction: ${error.message}`,
+          error: `Error signing approval transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -270,7 +264,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error serializing signed approval transaction: ${error.message}`,
+          error: `Error serializing signed approval transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -294,7 +288,7 @@ export default async () => {
           } catch (error) {
             console.log("Error sending approval transaction:", error);
             throw new Error(
-              `Error sending approval transaction: ${error.message}`
+              `Error sending approval transaction: ${error instanceof Error ? error.message : String(error)}`
             );
           }
         }
@@ -308,7 +302,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error in approval transaction: ${error.message}`,
+          error: `Error in approval transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -328,7 +322,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error confirming approval transaction: ${error.message}`,
+          error: `Error confirming approval transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -349,15 +343,13 @@ export default async () => {
     ];
 
     const swapTx = {
-      type: 2, // EIP-1559
       to: UNISWAP_V3_ROUTER,
       data: routerInterface.encodeFunctionData("exactInputSingle", [
         swapParamsArray,
       ]),
       value: "0x0",
       gasLimit: ethers.utils.hexlify(200000),
-      maxFeePerGas: feeData.maxFeePerGas.mul(2).toHexString(), // Double the suggested fee
-      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas.mul(2).toHexString(), // Double the suggested priority fee
+      gasPrice: (await ethersProvider.getGasPrice()).mul(2).toHexString(),
       nonce: await ethersProvider.getTransactionCount(pkpEthAddress),
       chainId: chainInfo.chainId,
     };
@@ -370,7 +362,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Invalid swap transaction: ${error.message}`,
+          error: `Invalid swap transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -390,7 +382,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error signing swap transaction: ${error.message}`,
+          error: `Error signing swap transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -412,7 +404,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error serializing signed swap transaction: ${error.message}`,
+          error: `Error serializing signed swap transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
@@ -434,7 +426,9 @@ export default async () => {
             return swapReceipt.hash;
           } catch (error) {
             console.log("Error sending swap transaction:", error);
-            throw new Error(`Error sending swap transaction: ${error.message}`);
+            throw new Error(
+              `Error sending swap transaction: ${error instanceof Error ? error.message : String(error)}`
+            );
           }
         }
       );
@@ -447,7 +441,7 @@ export default async () => {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Error in swap transaction: ${error.message}`,
+          error: `Error in swap transaction: ${error instanceof Error ? error.message : String(error)}`,
         }),
       });
       throw error;
