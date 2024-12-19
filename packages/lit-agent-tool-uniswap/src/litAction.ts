@@ -76,6 +76,8 @@ export default async () => {
       chainId: chainInfo.chainId,
     };
 
+    console.log("approvalTx", approvalTx);
+
     const approvalSig = await Lit.Actions.signAndCombineEcdsa({
       toSign: ethers.utils.arrayify(
         ethers.utils.keccak256(ethers.utils.serializeTransaction(approvalTx))

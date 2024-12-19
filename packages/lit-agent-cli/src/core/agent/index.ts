@@ -9,6 +9,7 @@ import { Command } from "commander";
 
 import { ConfigManager } from "../../utils/config";
 import { validateEnvVar } from "../../utils/env";
+import type { LitNodeClient } from "@lit-protocol/lit-node-client";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",
@@ -92,22 +93,29 @@ export async function processAgentRequest(
   if (analysis.recipientAddress)
     console.log(`- Recipient: ${analysis.recipientAddress}`);
 
-  const litNodeClient = await getLitNodeClient(config.network!);
-  const executionResult = await executeLitAction(
-    litNodeClient,
-    ethersSigner,
-    { publicKey: config.pkp!.publicKey!, tokenId: config.pkp!.tokenId! },
-    matchedAction.ipfsCid,
-    {
-      chainInfo: {
-        rpcUrl: chainToSubmitTxnOnRpcUrl,
-        chainId: chainToSubmitTxnOnChainId,
-      },
-      publicKey: config.pkp!.publicKey!,
-      pkpEthAddress: config.pkp!.ethAddress!,
-      params: analysis,
-    }
-  );
+  let litNodeClient: LitNodeClient;
+  try {
+    litNodeClient = await getLitNodeClient(config.network!);
+    const executionResult = await executeLitAction(
+      litNodeClient,
+      ethersSigner,
+      { publicKey: config.pkp!.publicKey!, tokenId: config.pkp!.tokenId! },
+      matchedAction.ipfsCid,
+      {
+        chainInfo: {
+          rpcUrl: chainToSubmitTxnOnRpcUrl,
+          chainId: parseInt(chainToSubmitTxnOnChainId),
+        },
+        publicKey: config.pkp!.publicKey!,
+        pkpEthAddress: config.pkp!.ethAddress!,
+        params: analysis,
+      }
+    );
 
-  console.log(`Execution result: ${JSON.stringify(executionResult, null, 2)}`);
+    console.log(
+      `Execution result: ${JSON.stringify(executionResult, null, 2)}`
+    );
+  } finally {
+    litNodeClient!.disconnect();
+  }
 }
