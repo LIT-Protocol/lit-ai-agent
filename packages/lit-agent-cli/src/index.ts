@@ -1,6 +1,6 @@
-import { foo } from 'lit-agent-toolkit';
-// import { ipfsMetadata, uniswapLitAction } from "lit-agent-tool-uniswap";
+import { foo } from "lit-agent-toolkit";
+import { ipfsMetadata, uniswapLitAction } from "lit-agent-tool-uniswap";
 
 console.log(foo);
-// console.log(ipfsMetadata);
-// console.log(uniswapLitAction);
+console.log(ipfsMetadata);
+console.log(uniswapLitAction);

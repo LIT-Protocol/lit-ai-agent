@@ -102,9 +102,8 @@ const _litActionCode = async () => {
           const provider = new ethers.providers.JsonRpcProvider(
             chainInfo.rpcUrl
           );
-          const approvalReceipt = await provider.sendTransaction(
-            signedApprovalTx
-          );
+          const approvalReceipt =
+            await provider.sendTransaction(signedApprovalTx);
           return approvalReceipt.hash;
         } catch (error) {
           throw error;
@@ -195,4 +194,4 @@ const _litActionCode = async () => {
   }
 };
 
-export const litAction = `(${_litActionCode.toString()})();`;
+export const uniswapLitAction = `(${_litActionCode.toString()})();`;
