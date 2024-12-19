@@ -20,7 +20,7 @@ async function uploadToPinata(pinataJwt, data) {
   // Create form data manually
   const formData = [
     `--${boundary}`,
-    'Content-Disposition: form-data; name="file"; filename="litAction.js"',
+    'Content-Disposition: form-data; name="file"; filename="lit-action.js"',
     "Content-Type: text/plain",
     "",
     data,
@@ -74,11 +74,7 @@ async function updateIpfsMetadata(newMetadata) {
     await fs.writeFile(ipfsPath, JSON.stringify(metadata, null, 2));
 
     // Update index files with new metadata
-    const litActionCode = await fs.readFile(
-      join(rootDir, "dist", "lit-action.js"),
-      "utf-8"
-    );
-    await generateIndexFiles(litActionCode, metadata);
+    await generateIndexFiles(metadata);
   } catch (error) {
     console.error("Failed to update ipfs.json:", error);
     throw error;
@@ -97,14 +93,14 @@ async function main() {
     // Ensure dist directory exists
     await fs.mkdir(join(rootDir, "dist"), { recursive: true });
 
-    // Read the bundled lit action
-    const bundled = await fs.readFile(
-      join(rootDir, "dist", "lit-action.js"),
+    // Read the action string
+    const actionString = await fs.readFile(
+      join(rootDir, "dist", "lit-action-string.js"),
       "utf-8"
     );
 
     const startTime = Date.now();
-    const pinataResponse = await uploadToPinata(PINATA_JWT, bundled);
+    const pinataResponse = await uploadToPinata(PINATA_JWT, actionString);
     const duration = (Date.now() - startTime) / 1000;
 
     // Create metadata

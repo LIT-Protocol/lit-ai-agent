@@ -2,7 +2,7 @@ export async function uploadToPinata(pinataJwt: string, data: string) {
   const formData = new FormData();
 
   const blob = new Blob([data], { type: "text/plain" });
-  formData.append("file", blob, "litAction.js");
+  formData.append("file", blob, "lit-action.js");
 
   const pinataMetadata = JSON.stringify({
     name: "Uniswap Swap Lit Action",

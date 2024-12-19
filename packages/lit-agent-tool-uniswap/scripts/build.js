@@ -7,31 +7,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
 
-// Function to bundle the lit action
-async function bundleLitAction() {
-  const litActionResult = await esbuild.build({
-    entryPoints: [join(rootDir, "src", "litAction.ts")],
-    bundle: true,
-    platform: "neutral",
-    format: "esm",
-    target: "esnext",
-    minify: false,
-    inject: [join(rootDir, "src", "esbuild-shims.js")],
-    write: false,
-    define: {
-      "process.env.NODE_ENV": '"production"',
-      "process.env.NODE_DEBUG": "false",
-    },
-  });
-
-  return litActionResult.outputFiles[0].text;
-}
-
 // Function to generate the index files
-async function generateIndexFiles(litActionCode, ipfsMetadata = {}) {
+async function generateIndexFiles(ipfsMetadata = {}) {
+  // Import the action string directly from the compiled source
+  const { uniswapLitAction, uniswapLitActionDescription } = await import(
+    "../dist/litAction.js"
+  );
+
   const indexContent = `
-export const uniswapLitActionDescription = "Swap tokens using Uniswap V3";
-export const uniswapLitAction = ${JSON.stringify(litActionCode)};
+export const uniswapLitActionDescription = ${JSON.stringify(uniswapLitActionDescription)};
+export const uniswapLitAction = ${JSON.stringify(uniswapLitAction)};
 export const uniswapMetadata = ${JSON.stringify(ipfsMetadata)};
 `;
 
@@ -52,6 +37,12 @@ export declare const uniswapMetadata: {
 };
 `
   );
+
+  // Write the action string to a separate file for IPFS upload
+  await fs.writeFile(
+    join(rootDir, "dist", "lit-action-string.js"),
+    uniswapLitAction
+  );
 }
 
 // Main build function
@@ -60,9 +51,18 @@ async function build() {
     // Ensure dist directory exists
     await fs.mkdir(join(rootDir, "dist"), { recursive: true });
 
-    // Bundle the lit action
-    const litActionCode = await bundleLitAction();
-    await fs.writeFile(join(rootDir, "dist", "lit-action.js"), litActionCode);
+    // First build the litAction.ts file
+    await esbuild.build({
+      entryPoints: [join(rootDir, "src", "litAction.ts")],
+      bundle: true,
+      platform: "node",
+      format: "esm",
+      target: "esnext",
+      outfile: join(rootDir, "dist", "litAction.js"),
+      define: {
+        "process.env.NODE_ENV": '"production"',
+      },
+    });
 
     // Read the IPFS metadata if it exists
     let ipfsMetadata = {};
@@ -78,8 +78,8 @@ async function build() {
       );
     }
 
-    // Generate index files
-    await generateIndexFiles(litActionCode, ipfsMetadata);
+    // Generate index files and write action string
+    await generateIndexFiles(ipfsMetadata);
 
     console.log("Build completed successfully");
   } catch (error) {
@@ -88,7 +88,7 @@ async function build() {
   }
 }
 
-export { bundleLitAction, generateIndexFiles };
+export { generateIndexFiles };
 
 // Only run build if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
