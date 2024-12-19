@@ -10,6 +10,10 @@ import type { InitConfig } from "../commands/init";
 import { ConfigManager } from "../utils/config";
 
 const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
+const LIT_AGENT_REGISTRY_ADDRESS = process.env.LIT_AGENT_REGISTRY_ADDRESS;
+
+// ABI for the registerPKP function
+const LIT_AGENT_REGISTRY_ABI = ["function registerPKP(address pkp) external"];
 
 export const initLitProtocol = async (config: InitConfig) => {
   let capacityTokenId = config.capacityTokenId;
@@ -20,13 +24,23 @@ export const initLitProtocol = async (config: InitConfig) => {
       throw new Error("ETHEREUM_PRIVATE_KEY environment variable is required");
     }
 
-    const ethersSigner = new ethers.Wallet(
+    if (!LIT_AGENT_REGISTRY_ADDRESS) {
+      throw new Error(
+        "LIT_AGENT_REGISTRY_ADDRESS environment variable is required"
+      );
+    }
+
+    const ethersSignerChronicleYellowstone = new ethers.Wallet(
       ETHEREUM_PRIVATE_KEY,
       new ethers.providers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE)
     );
+    const ethersSignerLocalhost = new ethers.Wallet(
+      ETHEREUM_PRIVATE_KEY,
+      new ethers.providers.JsonRpcProvider("http://localhost:8545")
+    );
 
     const litContractsClient = await getLitContractsClient(
-      ethersSigner,
+      ethersSignerChronicleYellowstone,
       config.network
     );
 
@@ -44,6 +58,24 @@ export const initLitProtocol = async (config: InitConfig) => {
         tokenId: pkpInfo.pkp.tokenId,
         ethAddress: pkpInfo.pkp.ethAddress,
       };
+
+      // Register the PKP with the LitAgentRegistry
+      const registryContract = new ethers.Contract(
+        LIT_AGENT_REGISTRY_ADDRESS,
+        LIT_AGENT_REGISTRY_ABI,
+        ethersSignerLocalhost
+      );
+
+      try {
+        console.log("Registering PKP with LitAgentRegistry...");
+        const tx = await registryContract.registerPKP(pkp.ethAddress);
+        await tx.wait();
+        console.log("Successfully registered PKP with LitAgentRegistry");
+        console.log(`Transaction hash: ${tx.hash}`);
+      } catch (error) {
+        console.error("Failed to register PKP with LitAgentRegistry:", error);
+        throw error;
+      }
 
       await ConfigManager.saveConfig({
         pkp,

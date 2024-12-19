@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {PKPTools} from "../contracts/PKPTools.sol";
+import {PKPTools} from "contracts/PKPTools.sol";
 import {SafeDeployScript} from "./SafeDeploy.s.sol";
 
 contract PKPToolsScript is Script {

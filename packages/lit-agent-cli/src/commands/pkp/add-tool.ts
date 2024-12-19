@@ -4,6 +4,7 @@ import inquirer from "inquirer";
 import { ConfigManager } from "../../utils/config";
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
 import { addPermittedActionToPkp } from "../../core/pkp/addPermittedAction";
+import { setActionPolicy } from "../../core/pkp/setActionPolicy";
 
 export function registerAddToolCommand(program: Command): void {
   program
@@ -59,6 +60,16 @@ export function registerAddToolCommand(program: Command): void {
         }
 
         await addPermittedActionToPkp(config, selectedTool.ipfsId);
+
+        console.log("Setting action policy in registry...");
+        const policyTx = await setActionPolicy({
+          pkpAddress: config.pkp!.ethAddress!,
+          ipfsCid: selectedTool.ipfsId,
+          description: selectedTool.description,
+        });
+        await policyTx.wait();
+        console.log("Successfully set action policy in registry!");
+        console.log(`Transaction hash: ${policyTx.hash}`);
 
         console.log(`\nSuccessfully added ${selectedTool.name} tool to PKP`);
       } catch (error) {

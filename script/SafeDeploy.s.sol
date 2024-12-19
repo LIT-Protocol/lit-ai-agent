@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.24;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Safe} from "../lib/safe-contracts/contracts/Safe.sol";
-import {SafeProxyFactory} from "../lib/safe-contracts/contracts/proxies/SafeProxyFactory.sol";
+import {Safe} from "safe-contracts/contracts/Safe.sol";
+import {SafeProxyFactory} from "safe-contracts/contracts/proxies/SafeProxyFactory.sol";
 
 contract SafeDeployScript is Script {
     Safe public safeSingleton;

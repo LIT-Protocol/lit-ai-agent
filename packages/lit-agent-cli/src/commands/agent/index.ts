@@ -2,9 +2,11 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import { OpenAI } from "openai";
 import { ethers } from "ethers";
+import { analyzeUserIntentAndMatchAction } from "lit-agent-toolkit";
 
 import { ConfigManager } from "../../utils/config";
-import { analyzeUserIntentAndMatchAction } from "lit-agent-toolkit";
+
+const LIT_AGENT_REGISTRY_ABI = ["function registerPKP(address pkp) external"];
 
 export function registerAgentCommand(program: Command): void {
   program
@@ -22,15 +24,26 @@ export function registerAgentCommand(program: Command): void {
 
         // Check for OpenAI API key
         const openaiApiKey = process.env.OPENAI_API_KEY;
-        if (!openaiApiKey) {
+        if (openaiApiKey === "" || openaiApiKey === undefined) {
           command.error(
             "Missing OPENAI_API_KEY environment variable. Please set it in your .env file."
           );
         }
 
+        // Check for LIT_AGENT_REGISTRY_ADDRESS
+        const litAgentRegistryAddress = process.env.LIT_AGENT_REGISTRY_ADDRESS;
+        if (
+          litAgentRegistryAddress === "" ||
+          litAgentRegistryAddress === undefined
+        ) {
+          command.error(
+            "Missing LIT_AGENT_REGISTRY_ADDRESS environment variable. Please set it in your .env file."
+          );
+        }
+
         // Initialize OpenAI client
         const openai = new OpenAI({
-          apiKey: openaiApiKey,
+          apiKey: openaiApiKey as string,
         });
 
         // Get user input
@@ -50,12 +63,10 @@ export function registerAgentCommand(program: Command): void {
 
         console.log("\nAnalyzing your request...");
 
-        // TODO: Replace with actual registry contract instance
-        // This is a placeholder - you'll need to add the actual contract integration
         const mockRegistry = new ethers.Contract(
-          "0x0000000000000000000000000000000000000000",
-          [],
-          ethers.providers.getDefaultProvider()
+          litAgentRegistryAddress as string,
+          LIT_AGENT_REGISTRY_ABI,
+          new ethers.providers.JsonRpcProvider("http://localhost:8545")
         );
 
         const { analysis, matchedAction } =

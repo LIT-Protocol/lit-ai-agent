@@ -3,6 +3,7 @@ import { registerInitCommand } from "./commands/init";
 import { registerConfigCommands } from "./commands/config";
 import { registerPkpCommands } from "./commands/pkp";
 import { registerAgentCommand } from "./commands/agent";
+import { registerDevCommands } from "./commands/dev";
 
 const program = new Command();
 
@@ -17,6 +18,7 @@ registerInitCommand(program);
 registerConfigCommands(program);
 registerPkpCommands(program);
 registerAgentCommand(program);
+registerDevCommands(program);
 
 try {
   program.parse();
