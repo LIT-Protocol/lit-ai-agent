@@ -1,6 +1,0 @@
-*
-!dist/
-!dist/*
-src/
-deno.jsonc
-tsconfig.json 
