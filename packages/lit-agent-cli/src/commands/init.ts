@@ -31,10 +31,7 @@ export function registerInitCommand(program: Command): void {
     .description("Initialize Lit Protocol configuration and clients")
     .action(async (_, command) => {
       try {
-        console.log("DEBUG: Starting init command");
         const existingConfig = await ConfigManager.loadConfig();
-        console.log("DEBUG: Loaded config:", existingConfig);
-        console.log("DEBUG: About to prompt");
 
         const answers = await inquirer.prompt<InitPromptAnswers>([
           {
