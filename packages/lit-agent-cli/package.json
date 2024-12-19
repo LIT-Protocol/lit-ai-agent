@@ -1,18 +1,14 @@
 {
   "name": "lit-agent-cli",
   "version": "0.1.0",
-  "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "lit-agent": "./dist/index.js"
-  },
+  "type": "module",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "start": "tsx src/index.ts"
   },
   "dependencies": {
-    "lit-agent-toolkit": "0.1.0"
+    "lit-agent-toolkit": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
   }
 }
