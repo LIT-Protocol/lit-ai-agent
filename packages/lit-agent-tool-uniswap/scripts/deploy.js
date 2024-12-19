@@ -95,7 +95,7 @@ async function main() {
 
     // Read the action string
     const actionString = await fs.readFile(
-      join(rootDir, "dist", "lit-action-string.js"),
+      join(rootDir, "dist", "lit-action.js"),
       "utf-8"
     );
 
