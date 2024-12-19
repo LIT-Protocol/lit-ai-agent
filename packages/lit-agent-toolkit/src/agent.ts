@@ -6,11 +6,15 @@ import { getPermittedActions } from "./litAgentRegistry";
 export async function analyzeUserIntentAndMatchAction(
   openai: OpenAI,
   userIntent: string,
-  registry: ethers.Contract,
-  user: string,
-  pkp: string
+  litAgentRegistryContract: ethers.Contract,
+  userEthAddress: string,
+  pkpEthAddress: string
 ) {
-  const permittedActions = await getPermittedActions(registry, user, pkp);
+  const permittedActions = await getPermittedActions(
+    litAgentRegistryContract,
+    userEthAddress,
+    pkpEthAddress
+  );
 
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",

@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { registerInitCommand } from "./commands/init";
 import { registerConfigCommands } from "./commands/config";
 import { registerPkpCommands } from "./commands/pkp";
+import { registerAgentCommand } from "./commands/agent";
 
 const program = new Command();
 
@@ -15,16 +16,7 @@ program
 registerInitCommand(program);
 registerConfigCommands(program);
 registerPkpCommands(program);
-
-// Interactive Mode
-program
-  .command("interact")
-  .description("Start interactive mode for natural language interactions")
-  .action(() => {
-    console.log("Starting interactive mode...");
-    // Here we would implement the natural language processing to match
-    // user intent with available Lit Actions
-  });
+registerAgentCommand(program);
 
 try {
   program.parse();
