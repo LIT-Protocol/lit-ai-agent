@@ -20,7 +20,7 @@ async function uploadToPinata(pinataJwt, data) {
   // Create form data manually
   const formData = [
     `--${boundary}`,
-    'Content-Disposition: form-data; name="file"; filename="lit-action.js"',
+    'Content-Disposition: form-data; name="file"; filename="litAction.js"',
     "Content-Type: text/plain",
     "",
     data,
