@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { decodeSwapPolicy } from "lit-agent-tool-uniswap";
 
 export type LitAction = {
   ipfsCid: string;
@@ -7,15 +8,26 @@ export type LitAction = {
 };
 
 /**
- * Safely parse JSON string, returning empty object if invalid
- * @param jsonStr String to parse as JSON
- * @returns Parsed JSON object or empty object if invalid
+ * Safely decode policy bytes using the appropriate decoder
+ * @param policyBytes Raw policy bytes from the contract
+ * @returns Decoded policy object or empty object if invalid
  */
-function safeJsonParse(jsonStr: string): any {
-  try {
-    return JSON.parse(jsonStr);
-  } catch (e) {
+function decodePolicyBytes(policyBytes: string): any {
+  if (!policyBytes || policyBytes === "0x") {
     return {};
+  }
+
+  try {
+    // Try to decode as a Uniswap policy first
+    return decodeSwapPolicy(policyBytes);
+  } catch (e) {
+    // If decoding as Uniswap policy fails, try to decode as UTF-8 JSON
+    try {
+      return JSON.parse(ethers.utils.toUtf8String(policyBytes));
+    } catch {
+      // If all decoding attempts fail, return empty object
+      return {};
+    }
   }
 }
 
@@ -37,10 +49,7 @@ export async function getPermittedActions(
   return ipfsCids.map((ipfsCid: string, index: number) => ({
     ipfsCid,
     description: ethers.utils.toUtf8String(descriptions[index]),
-    policy:
-      policies[index] && policies[index] !== "0x"
-        ? safeJsonParse(ethers.utils.toUtf8String(policies[index]))
-        : {},
+    policy: decodePolicyBytes(policies[index]),
   }));
 }
 
@@ -70,10 +79,7 @@ export async function getActionPolicy(
   return {
     isPermitted,
     description: ethers.utils.toUtf8String(description),
-    policy:
-      policy && policy !== "0x"
-        ? safeJsonParse(ethers.utils.toUtf8String(policy))
-        : {},
+    policy: decodePolicyBytes(policy),
   };
 }
 
@@ -96,6 +102,6 @@ export async function setActionPolicy(
     pkp,
     ipfsCid,
     ethers.utils.toUtf8Bytes(description),
-    ethers.utils.toUtf8Bytes(JSON.stringify(policy))
+    policy // Policy should already be encoded bytes
   );
 }
