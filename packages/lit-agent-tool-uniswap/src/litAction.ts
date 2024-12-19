@@ -6,6 +6,7 @@ declare global {
   const params: any;
   const pkpEthAddress: any;
   const publicKey: any;
+  const LitAuth: any;
 }
 
 export default async () => {
@@ -16,6 +17,38 @@ export default async () => {
     "0x728e8162603F35446D09961c4A285e2643f4FB91";
 
   try {
+    // Validate auth parameters
+    if (!LitAuth.authSigAddress) {
+      throw new Error("Missing required parameter: LitAuth.authSigAddress");
+    }
+    if (!LitAuth.actionIpfsIds[0]) {
+      throw new Error("Missing required parameter: LitAuth.actionIpfsIds[0]");
+    }
+    if (!pkpEthAddress) {
+      throw new Error("Missing required parameter: pkpEthAddress");
+    }
+
+    // Validate swap parameters
+    if (!params.tokenIn) {
+      throw new Error("Missing required parameter: tokenIn");
+    }
+    if (!params.tokenOut) {
+      throw new Error("Missing required parameter: tokenOut");
+    }
+    if (!params.amountIn) {
+      throw new Error("Missing required parameter: amountIn");
+    }
+
+    // Validate and normalize token addresses
+    let tokenIn: string;
+    let tokenOut: string;
+    try {
+      tokenIn = ethers.utils.getAddress(params.tokenIn);
+      tokenOut = ethers.utils.getAddress(params.tokenOut);
+    } catch (error) {
+      throw new Error(`Invalid token address: ${error.message}`);
+    }
+
     const UNISWAP_V3_ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
     const ethersProvider = new ethers.providers.JsonRpcProvider(
       chainInfo.rpcUrl
@@ -33,9 +66,9 @@ export default async () => {
     );
 
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
-      params.user, // The user who owns the PKP
+      LitAuth.authSigAddress, // The user who owns the PKP
       pkpEthAddress, // The PKP address
-      params.recommendedCID // The IPFS CID of this Lit Action
+      LitAuth.actionIpfsIds[0] // The IPFS CID of this Lit Action
     );
 
     if (!isPermitted) {
@@ -73,17 +106,21 @@ export default async () => {
         );
       }
 
-      // Validate that allowedTokens contains valid addresses
+      // Validate and normalize allowed token addresses
       if (!Array.isArray(decodedPolicy.allowedTokens)) {
         throw new Error("Invalid policy format: allowedTokens is not an array");
       }
-      for (const token of decodedPolicy.allowedTokens) {
-        if (!ethers.utils.isAddress(token)) {
-          throw new Error(
-            `Invalid policy format: ${token} is not a valid address`
-          );
+      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map(
+        (token: string) => {
+          if (!ethers.utils.isAddress(token)) {
+            throw new Error(
+              `Invalid policy format: ${token} is not a valid address`
+            );
+          }
+          // Normalize to checksum address
+          return ethers.utils.getAddress(token);
         }
-      }
+      );
 
       console.log("Policy:", {
         maxAmount: decodedPolicy.maxAmount.toString(),
@@ -99,26 +136,30 @@ export default async () => {
       throw error;
     }
 
-    // Use the policy's allowed tokens
+    // Use the policy's allowed tokens (already normalized to checksum)
     const allowedTokens = decodedPolicy.allowedTokens;
 
-    if (!allowedTokens.includes(params.tokenIn)) {
+    // Normalize input token addresses to checksum format for comparison
+    const normalizedTokenIn = ethers.utils.getAddress(tokenIn);
+    const normalizedTokenOut = ethers.utils.getAddress(tokenOut);
+
+    if (!allowedTokens.includes(normalizedTokenIn)) {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Token not allowed: ${params.tokenIn}`,
+          error: `Token not allowed: ${normalizedTokenIn}`,
         }),
       });
-      throw new Error(`Token not allowed: ${params.tokenIn}`);
+      throw new Error(`Token not allowed: ${normalizedTokenIn}`);
     }
-    if (!allowedTokens.includes(params.tokenOut)) {
+    if (!allowedTokens.includes(normalizedTokenOut)) {
       LitActions.setResponse({
         response: JSON.stringify({
           status: "error",
-          error: `Token not allowed: ${params.tokenOut}`,
+          error: `Token not allowed: ${normalizedTokenOut}`,
         }),
       });
-      throw new Error(`Token not allowed: ${params.tokenOut}`);
+      throw new Error(`Token not allowed: ${normalizedTokenOut}`);
     }
 
     const tokenInterface = new ethers.utils.Interface([
@@ -126,13 +167,14 @@ export default async () => {
       "function approve(address spender, uint256 amount) external returns (bool)",
     ]);
 
+    // Use normalized addresses for contract interactions
     const tokenInContract = new ethers.Contract(
-      params.tokenIn,
+      normalizedTokenIn,
       tokenInterface,
       ethersProvider
     );
     const tokenOutContract = new ethers.Contract(
-      params.tokenOut,
+      normalizedTokenOut,
       tokenInterface,
       ethersProvider
     );
@@ -156,7 +198,7 @@ export default async () => {
     const amountOutMin = ethers.BigNumber.from(0);
 
     const approvalTx = {
-      to: params.tokenIn,
+      to: normalizedTokenIn, // Use normalized address
       data: tokenInterface.encodeFunctionData("approve", [
         UNISWAP_V3_ROUTER,
         amountIn,
@@ -216,8 +258,8 @@ export default async () => {
     ]);
 
     const swapParamsArray = [
-      params.tokenIn,
-      params.tokenOut,
+      normalizedTokenIn, // Use normalized address
+      normalizedTokenOut, // Use normalized address
       3000,
       pkpEthAddress,
       amountIn,
