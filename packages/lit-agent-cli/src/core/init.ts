@@ -23,14 +23,18 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
       "LIT_AGENT_REGISTRY_ADDRESS",
       command
     );
+    const chainToSubmitTxnOnRpcUrl = validateEnvVar(
+      "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
+      command
+    );
 
     const ethersSignerChronicleYellowstone = new ethers.Wallet(
       ethereumPrivateKey,
       new ethers.providers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE)
     );
-    const ethersSignerLocalhost = new ethers.Wallet(
+    const ethersSignerChainToSubmitTxnOn = new ethers.Wallet(
       ethereumPrivateKey,
-      new ethers.providers.JsonRpcProvider("http://localhost:8545")
+      new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl)
     );
 
     const litContractsClient = await getLitContractsClient(
@@ -57,7 +61,7 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
       const registryContract = new ethers.Contract(
         litAgentRegistryAddress,
         LIT_AGENT_REGISTRY_ABI,
-        ethersSignerLocalhost
+        ethersSignerChainToSubmitTxnOn
       );
 
       try {

@@ -33,6 +33,10 @@ export function registerListRegisteredActionsCommand(program: Command): void {
           "LIT_AGENT_REGISTRY_ADDRESS",
           command
         );
+        const chainToSubmitTxnOnRpcUrl = validateEnvVar(
+          "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
+          command
+        );
 
         // Get all available tools for metadata lookup
         const availableTools = getAvailableTools();
@@ -46,7 +50,7 @@ export function registerListRegisteredActionsCommand(program: Command): void {
 
         // Connect to registry contract
         const provider = new ethers.providers.JsonRpcProvider(
-          "http://localhost:8545"
+          chainToSubmitTxnOnRpcUrl
         );
         const signer = new ethers.Wallet(ethereumPrivateKey, provider);
         const registry = new ethers.Contract(

@@ -26,9 +26,13 @@ export async function setActionPolicy({
     "LIT_AGENT_REGISTRY_ADDRESS",
     command
   );
+  const chainToSubmitTxnOnRpcUrl = validateEnvVar(
+    "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
+    command
+  );
 
   const provider = new ethers.providers.JsonRpcProvider(
-    "http://localhost:8545"
+    chainToSubmitTxnOnRpcUrl
   );
   const signer = new ethers.Wallet(ethereumPrivateKey, provider);
   const registry = new ethers.Contract(
