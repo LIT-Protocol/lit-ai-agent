@@ -54,9 +54,8 @@ export const getPkpInfoFromMintReceipt = async (
 
   const publicKey = "0x" + pkpMintedEvent!.data.slice(130, 260);
   const tokenId = ethers.utils.keccak256(publicKey);
-  const ethAddress = await litContractsClient.pkpNftContract.read.getEthAddress(
-    tokenId
-  );
+  const ethAddress =
+    await litContractsClient.pkpNftContract.read.getEthAddress(tokenId);
 
   return {
     tokenId: ethers.BigNumber.from(tokenId).toString(),
@@ -65,6 +64,8 @@ export const getPkpInfoFromMintReceipt = async (
   };
 };
 
-export const mintPkp = async () => {};
+export const mintPkp = async (litContracts: LitContracts) => {
+  return await litContracts.pkpNftContractUtils.write.mint();
+};
 
 export const addAuthMethodToPkp = async () => {};

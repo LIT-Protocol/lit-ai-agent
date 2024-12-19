@@ -2,14 +2,26 @@
   "name": "lit-agent-cli",
   "version": "0.1.0",
   "type": "module",
+  "bin": {
+    "lit-agent": "./dist/cli.js"
+  },
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "dotenvx run -- tsx src/cli.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/cli.ts"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.31.0",
+    "@lit-protocol/constants": "^7.0.2",
+    "commander": "^12.1.0",
+    "ethers": "v5",
+    "inquirer": "^9.2.15",
     "lit-agent-tool-uniswap": "*",
     "lit-agent-toolkit": "*"
   },
   "devDependencies": {
-    "tsx": "^4.19.2"
+    "@types/inquirer": "^9.0.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.0"
   }
 }
