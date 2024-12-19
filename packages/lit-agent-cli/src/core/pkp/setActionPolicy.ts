@@ -10,7 +10,7 @@ interface SetActionPolicyParams {
   pkpAddress: string;
   ipfsCid: string;
   description: string;
-  policy?: any;
+  policy?: string;
   command: Command;
 }
 
@@ -42,9 +42,7 @@ export async function setActionPolicy({
   );
 
   const descriptionBytes = ethers.utils.toUtf8Bytes(description);
-  const policyBytes = policy
-    ? ethers.utils.toUtf8Bytes(JSON.stringify(policy))
-    : "0x";
+  const policyBytes = policy || "0x";
 
   const tx = await registry.setActionPolicy(
     pkpAddress,
