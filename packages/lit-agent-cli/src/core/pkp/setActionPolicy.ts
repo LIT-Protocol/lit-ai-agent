@@ -15,11 +15,11 @@ interface SetActionPolicyParams {
 }
 
 export async function setActionPolicy({
+  command,
   pkpAddress,
   ipfsCid,
   description,
   policy,
-  command,
 }: SetActionPolicyParams): Promise<ethers.ContractTransaction> {
   const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
   const litAgentRegistryAddress = validateEnvVar(

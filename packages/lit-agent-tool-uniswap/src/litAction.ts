@@ -9,27 +9,77 @@ declare global {
 }
 
 export default async () => {
+  const LIT_AGENT_REGISTRY_ABI = [
+    "function getActionPolicy(address user, address pkp, string calldata ipfsCid) external view returns (bool isPermitted, bytes memory description, bytes memory policy)",
+  ];
+  const LIT_AGENT_REGISTRY_ADDRESS =
+    "0x728e8162603F35446D09961c4A285e2643f4FB91";
+
   try {
     const UNISWAP_V3_ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
     const ethersProvider = new ethers.providers.JsonRpcProvider(
       chainInfo.rpcUrl
     );
 
-    const allowedTokens = [
-      "0x4200000000000000000000000000000000000006", // WETH
-      "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC
-      "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf", // Coinbase Wrapped BTC
-    ];
+    // Create contract instance
+    const registryContract = new ethers.Contract(
+      LIT_AGENT_REGISTRY_ADDRESS,
+      LIT_AGENT_REGISTRY_ABI,
+      new ethers.providers.JsonRpcProvider(
+        await Lit.Actions.getRpcUrl({
+          chain: "base",
+        })
+      )
+    );
+
+    const [isPermitted, , policy] = await registryContract.getActionPolicy(
+      params.user, // The user who owns the PKP
+      pkpEthAddress, // The PKP address
+      params.ipfsCid // The IPFS CID of this Lit Action
+    );
+
+    if (!isPermitted) {
+      LitActions.setResponse({
+        response: JSON.stringify({
+          status: "error",
+          error: "Action not permitted for this PKP",
+        }),
+      });
+      throw new Error("Action not permitted for this PKP");
+    }
+
+    // Decode the policy using ABI encoding
+    // Define the policy struct format
+    const policyStruct = ["tuple(uint256 maxAmount, address[] allowedTokens)"];
+
+    const decodedPolicy = ethers.utils.defaultAbiCoder.decode(
+      policyStruct,
+      policy
+    )[0];
+
+    console.log("Policy:", {
+      maxAmount: decodedPolicy.maxAmount.toString(),
+      allowedTokens: decodedPolicy.allowedTokens,
+    });
+
+    // Use the policy's allowed tokens
+    const allowedTokens = decodedPolicy.allowedTokens;
 
     if (!allowedTokens.includes(params.tokenIn)) {
       LitActions.setResponse({
-        response: `Token not allowed: ${params.tokenIn}`,
+        response: JSON.stringify({
+          status: "error",
+          error: `Token not allowed: ${params.tokenIn}`,
+        }),
       });
       throw new Error(`Token not allowed: ${params.tokenIn}`);
     }
     if (!allowedTokens.includes(params.tokenOut)) {
       LitActions.setResponse({
-        response: `Token not allowed: ${params.tokenOut}`,
+        response: JSON.stringify({
+          status: "error",
+          error: `Token not allowed: ${params.tokenOut}`,
+        }),
       });
       throw new Error(`Token not allowed: ${params.tokenOut}`);
     }
@@ -55,10 +105,15 @@ export default async () => {
 
     const amountIn = ethers.utils.parseUnits(params.amountIn, decimalsIn);
 
-    const maxAmount = ethers.utils.parseUnits("0.001", decimalsIn);
-    if (amountIn.gt(maxAmount)) {
-      LitActions.setResponse({ response: "Requested swap amount too large" });
-      throw new Error("Requested swap amount too large");
+    // Check against policy maxAmount
+    if (amountIn.gt(decodedPolicy.maxAmount)) {
+      LitActions.setResponse({
+        response: JSON.stringify({
+          status: "error",
+          error: `Amount exceeds policy limit. Max allowed: ${ethers.utils.formatUnits(decodedPolicy.maxAmount, decimalsIn)}`,
+        }),
+      });
+      throw new Error("Amount exceeds policy limit");
     }
 
     const amountOutMin = ethers.BigNumber.from(0);

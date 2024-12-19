@@ -19,8 +19,17 @@ export function registerShowCommand(program: Command): void {
         console.log("\nCurrent Configuration:");
         console.log("---------------------");
         console.log(`Config Location: ${ConfigManager.getConfigPath()}`);
+
+        // Format each config entry
         Object.entries(currentConfig).forEach(([key, value]) => {
-          console.log(`${key}: ${value || "Not set"}`);
+          if (key === "pkp" && value) {
+            console.log("pkp:");
+            Object.entries(value).forEach(([pkpKey, pkpValue]) => {
+              console.log(`  ${pkpKey}: ${pkpValue || "Not set"}`);
+            });
+          } else {
+            console.log(`${key}: ${value || "Not set"}`);
+          }
         });
       } catch (error) {
         if (error instanceof Error) {

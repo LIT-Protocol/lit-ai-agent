@@ -8,25 +8,19 @@ pragma solidity ^0.8.24;
  * 
  * Each Lit Action has:
  * 1. A description - Required system field used by the LLM to match user intents with actions
- * 2. A policy - Optional user-defined JSON object for action-specific configuration
- *    Example policy format:
- *    {
- *      "maxAmount": "1000000000000000000",
- *      "allowedTokens": ["0x...", "0x..."],
- *      "timelock": 3600
- *    }
+ * 2. A policy - Tool-specific configuration bytes that can be empty or in any format required by the tool
  */
 contract LitAgentRegistry {
     /**
      * @dev Stores the policy and metadata for a specific Lit Action
      * @param isPermitted Whether the action is currently permitted
      * @param description Human-readable description of what this Lit Action does (e.g., "Swap ETH for USDC on Uniswap")
-     * @param policy ABI encoded JSON object containing user-defined action configuration
+     * @param policy Tool-specific configuration bytes
      */
     struct ActionPolicy {
         bool isPermitted;
         bytes description;  // Required field for LLM matching, stored as bytes for gas savings
-        bytes policy;       // Optional user-defined configuration
+        bytes policy;      // Tool-specific configuration bytes
     }
 
     /**
@@ -79,7 +73,7 @@ contract LitAgentRegistry {
      * @param pkp Address of the PKP
      * @param ipfsCid IPFS CID of the Lit Action
      * @param description Human-readable description of what this Lit Action does
-     * @param policy Optional ABI encoded JSON policy configuration
+     * @param policy Tool-specific policy bytes (can be empty or in any format required by the tool)
      * @notice The description is required and used by the LLM for action matching
      */
     function setActionPolicy(
@@ -140,7 +134,7 @@ contract LitAgentRegistry {
      * @param ipfsCid IPFS CID of the Lit Action
      * @return isPermitted Whether the action is permitted
      * @return description Human-readable description of what this action does
-     * @return policy The ABI encoded policy configuration
+     * @return policy The ABI encoded policy struct
      */
     function getActionPolicy(
         address user,
@@ -158,7 +152,7 @@ contract LitAgentRegistry {
      * @param pkp Address of the PKP
      * @return ipfsCids Array of IPFS CIDs for registered actions
      * @return descriptions Array of action descriptions (in same order as ipfsCids)
-     * @return policies Array of ABI encoded policies (in same order as ipfsCids)
+     * @return policies Array of ABI encoded policy structs (in same order as ipfsCids)
      */
     function getRegisteredActions(address user, address pkp)
         external
