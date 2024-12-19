@@ -28,6 +28,14 @@ source .env
 forge script script/DeployLitAgentRegistry.s.sol:DeployLitAgentRegistry --rpc-url http://localhost:8545 --broadcast
 ```
 
+# Adding Uniswap Tool
+
+```bash
+1000000000000000000
+
+0x4200000000000000000000000000000000000006,0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf
+```
+
 # Prompts
 
 ```

@@ -108,7 +108,11 @@ export async function processAgentRequest(
         },
         publicKey: config.pkp!.publicKey!,
         pkpEthAddress: config.pkp!.ethAddress!,
-        params: analysis,
+        params: {
+          ...analysis,
+          user: ethersSigner.address,
+          ipfsCid: matchedAction.ipfsCid,
+        },
       }
     );
 
