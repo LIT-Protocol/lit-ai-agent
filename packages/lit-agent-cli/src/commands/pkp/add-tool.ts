@@ -6,6 +6,68 @@ import { getAvailableTools, LitAgentTool } from "../../utils/tools";
 import { addPermittedActionToPkp } from "../../core/pkp/addPermittedAction";
 import { setActionPolicy } from "../../core/pkp/setActionPolicy";
 
+async function promptForPolicy(
+  tool: LitAgentTool
+): Promise<string | undefined> {
+  if (!tool.policySchema) {
+    return undefined;
+  }
+
+  console.log("\nConfiguring tool policy:");
+  const schema = tool.policySchema as any;
+  const answers: Record<string, any> = {};
+
+  // Handle each property in sequence
+  for (const [key, prop] of Object.entries<any>(schema.properties)) {
+    if (prop.type === "array") {
+      console.log(`\n${prop.description}`);
+      if (prop.example) {
+        console.log("Examples:", JSON.stringify(prop.example, null, 2));
+      }
+      console.log("Enter values as a comma-separated list");
+
+      const { input } = await inquirer.prompt<{ input: string }>([
+        {
+          type: "input",
+          name: "input",
+          message: `Enter ${prop.items.description}:`,
+          validate: (input: string) => {
+            if (!input.trim()) {
+              return true; // Allow empty input for empty arrays
+            }
+
+            const items = input.split(",").map((item) => item.trim());
+            if (prop.items.pattern) {
+              const regex = new RegExp(prop.items.pattern);
+              const invalidItems = items.filter((item) => !regex.test(item));
+              if (invalidItems.length > 0) {
+                return `These items do not match the required pattern ${prop.items.pattern}:\n${invalidItems.join("\n")}`;
+              }
+            }
+            return true;
+          },
+        },
+      ]);
+
+      answers[key] = input.trim()
+        ? input.split(",").map((item) => item.trim())
+        : [];
+    } else {
+      // Handle non-array inputs
+      const { value } = await inquirer.prompt<{ value: string }>([
+        {
+          type: "input",
+          name: "value",
+          message: `Enter ${prop.description}${prop.example ? ` (example: ${prop.example})` : ""}:`,
+        },
+      ]);
+      answers[key] = value;
+    }
+  }
+
+  return tool.encodePolicyFn ? tool.encodePolicyFn(answers) : undefined;
+}
+
 export function registerAddToolCommand(program: Command): void {
   program
     .command("add-tool")
@@ -45,28 +107,18 @@ export function registerAddToolCommand(program: Command): void {
         console.log(`- Package: ${selectedTool.package}`);
         console.log(`- IPFS ID: ${selectedTool.ipfsId}`);
 
-        const { confirm } = await inquirer.prompt<{ confirm: boolean }>([
-          {
-            type: "confirm",
-            name: "confirm",
-            message: "Would you like to proceed?",
-            default: true,
-          },
-        ]);
-
-        if (!confirm) {
-          console.log("Operation cancelled");
-          return;
-        }
+        // Prompt for policy configuration if the tool has a policy schema
+        const encodedPolicy = await promptForPolicy(selectedTool);
 
         await addPermittedActionToPkp(config, selectedTool.ipfsId);
 
         console.log("Setting action policy in registry...");
         const policyTx = await setActionPolicy({
+          command,
           pkpAddress: config.pkp!.ethAddress!,
           ipfsCid: selectedTool.ipfsId,
           description: selectedTool.description,
-          command,
+          policy: encodedPolicy,
         });
         await policyTx.wait();
         console.log("Successfully set action policy in registry!");

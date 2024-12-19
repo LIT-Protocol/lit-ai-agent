@@ -68,39 +68,80 @@ async function generateActionString() {
   return `(${functionBody})();`;
 }
 
+// Function to get existing metadata
+async function getExistingMetadata() {
+  try {
+    const content = await fs.readFile(
+      join(rootDir, "dist", "ipfs.json"),
+      "utf-8"
+    );
+    const metadata = JSON.parse(content);
+    return metadata.uniswapLitAction || {};
+  } catch (error) {
+    return {};
+  }
+}
+
 // Function to generate the index files
 async function generateIndexFiles(ipfsMetadata = {}) {
-  const [actionString, description] = await Promise.all([
+  const [actionString, description, existingMetadata] = await Promise.all([
     generateActionString(),
     getDescription(),
+    getExistingMetadata(),
   ]);
 
-  const indexContent = `
+  // Use existing metadata if no new metadata is provided
+  const metadata =
+    Object.keys(ipfsMetadata).length > 0
+      ? ipfsMetadata.uniswapLitAction
+      : existingMetadata;
+
+  // Create the JavaScript content
+  const jsContent = `
 export const uniswapLitActionDescription = ${JSON.stringify(description)};
+
 export const uniswapLitAction = ${JSON.stringify(actionString)};
-export const uniswapMetadata = ${JSON.stringify(ipfsMetadata)};
+
+export const uniswapMetadata = {
+  uniswapLitAction: {
+    IpfsHash: ${JSON.stringify(metadata.IpfsHash || "")},
+    PinSize: ${metadata.PinSize || 0},
+    Timestamp: ${JSON.stringify(metadata.Timestamp || "")},
+    isDuplicate: ${metadata.isDuplicate || false},
+    Duration: ${metadata.Duration || 0}
+  }
+};
+
+export * from "./policy";
 `;
 
-  await fs.writeFile(join(rootDir, "dist", "index.js"), indexContent);
-  await fs.writeFile(
-    join(rootDir, "dist", "index.d.ts"),
-    `
-export declare const uniswapLitActionDescription: string;
-export declare const uniswapLitAction: string;
-export declare const uniswapMetadata: {
-  uniswapLitAction: {
-    IpfsHash: string;
-    PinSize: number;
-    Timestamp: string;
-    isDuplicate: boolean;
-    Duration: number;
-  };
+  // Create the TypeScript declaration content
+  const dtsContent = `
+export type UniswapMetadata = {
+  IpfsHash: string;
+  PinSize: number;
+  Timestamp: string;
+  isDuplicate: boolean;
+  Duration: number;
 };
-`
-  );
 
-  // Write the action string to a separate file for IPFS upload
-  await fs.writeFile(join(rootDir, "dist", "lit-action.js"), actionString);
+export type UniswapLitActionString = string;
+
+export declare const uniswapLitActionDescription: string;
+export declare const uniswapLitAction: UniswapLitActionString;
+export declare const uniswapMetadata: {
+  uniswapLitAction: UniswapMetadata;
+};
+
+export * from "./policy";
+`;
+
+  // Write the files
+  await Promise.all([
+    fs.writeFile(join(rootDir, "dist", "index.js"), jsContent),
+    fs.writeFile(join(rootDir, "dist", "index.d.ts"), dtsContent),
+    fs.writeFile(join(rootDir, "dist", "lit-action.js"), actionString),
+  ]);
 }
 
 // Main build function
@@ -109,22 +150,8 @@ async function build() {
     // Ensure dist directory exists
     await fs.mkdir(join(rootDir, "dist"), { recursive: true });
 
-    // Read the IPFS metadata if it exists
-    let ipfsMetadata = {};
-    try {
-      const content = await fs.readFile(
-        join(rootDir, "dist", "ipfs.json"),
-        "utf-8"
-      );
-      ipfsMetadata = JSON.parse(content);
-    } catch (error) {
-      console.warn(
-        "Warning: ipfs.json not found or invalid, using empty metadata"
-      );
-    }
-
     // Generate index files and write action string
-    await generateIndexFiles(ipfsMetadata);
+    await generateIndexFiles();
 
     console.log("Build completed successfully");
   } catch (error) {
