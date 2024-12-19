@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { registerInitCommand } from "./commands/init";
 import { registerConfigCommands } from "./commands/config";
+import { registerPkpCommands } from "./commands/pkp";
 
 const program = new Command();
 
@@ -13,6 +14,7 @@ program
 // Register commands
 registerInitCommand(program);
 registerConfigCommands(program);
+registerPkpCommands(program);
 
 // Interactive Mode
 program
@@ -24,4 +26,13 @@ program
     // user intent with available Lit Actions
   });
 
-program.parse();
+try {
+  program.parse();
+} catch (error) {
+  if (error instanceof Error) {
+    console.error("Error:", error.message);
+  } else {
+    console.error("An unknown error occurred");
+  }
+  process.exit(1);
+}

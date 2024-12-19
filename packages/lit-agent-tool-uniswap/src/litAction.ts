@@ -195,3 +195,4 @@ const _litActionCode = async () => {
 };
 
 export const uniswapLitAction = `(${_litActionCode.toString()})();`;
+export const uniswapLitActionDescription = "Swap tokens using Uniswap V3";

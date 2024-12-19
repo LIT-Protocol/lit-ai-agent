@@ -1,5 +1,9 @@
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { LIT_NETWORK } from "@lit-protocol/constants";
+import {
+  AUTH_METHOD_SCOPE,
+  AUTH_METHOD_SCOPE_VALUES,
+  LIT_NETWORK,
+} from "@lit-protocol/constants";
 import { LitContracts } from "@lit-protocol/contracts-sdk";
 import { ethers } from "ethers";
 
@@ -68,4 +72,26 @@ export const mintPkp = async (litContracts: LitContracts) => {
   return await litContracts.pkpNftContractUtils.write.mint();
 };
 
-export const addAuthMethodToPkp = async () => {};
+export const addPermittedActionToPkp = async (
+  litContracts: LitContracts,
+  pkpPublicKey: string,
+  ipfsId: string,
+  authMethodScopes: AUTH_METHOD_SCOPE_VALUES[] = [
+    AUTH_METHOD_SCOPE.SignAnything,
+  ]
+) => {
+  return litContracts.addPermittedAction({
+    pkpTokenId: pkpPublicKey,
+    ipfsId,
+    authMethodScopes,
+  });
+};
+
+export const getPermittedActionsForPkp = async (
+  litContracts: LitContracts,
+  pkpTokenId: string
+) => {
+  return litContracts.pkpPermissionsContractUtils.read.getPermittedActions(
+    pkpTokenId
+  );
+};

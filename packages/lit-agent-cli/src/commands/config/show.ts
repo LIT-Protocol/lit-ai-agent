@@ -5,7 +5,7 @@ export function registerShowCommand(program: Command): void {
   program
     .command("show")
     .description("Show current configuration")
-    .action(async () => {
+    .action(async (_, command) => {
       try {
         const currentConfig = await ConfigManager.loadConfig();
 
@@ -23,8 +23,13 @@ export function registerShowCommand(program: Command): void {
           console.log(`${key}: ${value || "Not set"}`);
         });
       } catch (error) {
-        console.error("Error reading configuration:", error);
-        process.exit(1);
+        if (error instanceof Error) {
+          command.error(`Error reading configuration: ${error.message}`);
+        } else {
+          command.error(
+            "An unknown error occurred while reading configuration"
+          );
+        }
       }
     });
 }

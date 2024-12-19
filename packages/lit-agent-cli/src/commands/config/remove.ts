@@ -1,4 +1,6 @@
 import { Command } from "commander";
+import inquirer from "inquirer";
+
 import { ConfigManager } from "../../utils/config";
 
 export function registerRemoveCommand(program: Command): void {
@@ -6,10 +8,9 @@ export function registerRemoveCommand(program: Command): void {
     .command("remove")
     .description("Remove the configuration file")
     .option("-f, --force", "Skip confirmation prompt", false)
-    .action(async (options) => {
+    .action(async (options, command) => {
       try {
         if (!options.force) {
-          const inquirer = (await import("inquirer")).default;
           const { confirm } = await inquirer.prompt<{ confirm: boolean }>([
             {
               type: "confirm",
@@ -28,8 +29,13 @@ export function registerRemoveCommand(program: Command): void {
         ConfigManager.clearConfig();
         console.log("Configuration removed successfully");
       } catch (error) {
-        console.error("Error removing configuration:", error);
-        process.exit(1);
+        if (error instanceof Error) {
+          command.error(`Error removing configuration: ${error.message}`);
+        } else {
+          command.error(
+            "An unknown error occurred while removing configuration"
+          );
+        }
       }
     });
 }
