@@ -20,7 +20,7 @@ async function uploadToPinata(pinataJwt, data) {
   // Create form data manually
   const formData = [
     `--${boundary}`,
-    'Content-Disposition: form-data; name="file"; filename="lit-action.js"',
+    'Content-Disposition: form-data; name="file"; filename="litAction.js"',
     "Content-Type: text/plain",
     "",
     data,
@@ -95,7 +95,7 @@ async function main() {
 
     // Read the action string
     const actionString = await fs.readFile(
-      join(rootDir, "dist", "lit-action.js"),
+      join(rootDir, "dist", "litAction.js"),
       "utf-8"
     );
 
