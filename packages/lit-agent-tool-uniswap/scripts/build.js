@@ -7,11 +7,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
 
+// Function to get the description from index.ts
+async function getDescription() {
+  const result = await esbuild.build({
+    entryPoints: [join(rootDir, "src", "index.ts")],
+    bundle: false,
+    write: false,
+    format: "esm",
+    target: "esnext",
+    platform: "neutral",
+  });
+
+  const code = result.outputFiles[0].text;
+  const match = code.match(
+    /const uniswapLitActionDescription\s*=\s*["']([^"']+)["']/
+  );
+
+  if (!match) {
+    console.error("Code content:", code);
+    throw new Error("Could not find description in index.ts");
+  }
+
+  return match[1];
+}
+
 // Function to generate the action string
 async function generateActionString() {
   // Build the action file to get its contents
   const result = await esbuild.build({
-    entryPoints: [join(rootDir, "src", "uniswapAction.ts")],
+    entryPoints: [join(rootDir, "src", "litAction.ts")],
     bundle: true, // Enable bundling to resolve imports
     write: false,
     format: "esm",
@@ -26,7 +50,7 @@ async function generateActionString() {
   const actionCode = result.outputFiles[0].text;
 
   // Extract everything between the var assignment and the export statement
-  const startMatch = actionCode.indexOf("var uniswapAction_default = ");
+  const startMatch = actionCode.indexOf("var litAction_default = ");
   const endMatch = actionCode.indexOf("export {");
 
   if (startMatch === -1 || endMatch === -1) {
@@ -36,7 +60,7 @@ async function generateActionString() {
 
   // Extract the function definition (excluding the variable assignment)
   const functionBody = actionCode
-    .slice(startMatch + "var uniswapAction_default = ".length, endMatch)
+    .slice(startMatch + "var litAction_default = ".length, endMatch)
     .trim()
     .replace(/;$/, ""); // Remove trailing semicolon if present
 
@@ -46,10 +70,13 @@ async function generateActionString() {
 
 // Function to generate the index files
 async function generateIndexFiles(ipfsMetadata = {}) {
-  const actionString = await generateActionString();
+  const [actionString, description] = await Promise.all([
+    generateActionString(),
+    getDescription(),
+  ]);
 
   const indexContent = `
-export const uniswapLitActionDescription = "Swap tokens using Uniswap V3";
+export const uniswapLitActionDescription = ${JSON.stringify(description)};
 export const uniswapLitAction = ${JSON.stringify(actionString)};
 export const uniswapMetadata = ${JSON.stringify(ipfsMetadata)};
 `;
@@ -73,10 +100,7 @@ export declare const uniswapMetadata: {
   );
 
   // Write the action string to a separate file for IPFS upload
-  await fs.writeFile(
-    join(rootDir, "dist", "lit-action-string.js"),
-    actionString
-  );
+  await fs.writeFile(join(rootDir, "dist", "lit-action.js"), actionString);
 }
 
 // Main build function
