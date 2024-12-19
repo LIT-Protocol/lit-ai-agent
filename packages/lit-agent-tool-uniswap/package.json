@@ -14,7 +14,15 @@
     }
   },
   "scripts": {
-    "deploy": "deno task deploy"
+    "build": "node scripts/build.js",
+    "deploy": "yarn build && node scripts/deploy.js"
   },
-  "sideEffects": false
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.31.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.1",
+    "typescript": "^5.0.0"
+  }
 }
