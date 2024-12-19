@@ -15,5 +15,6 @@
   },
   "scripts": {
     "deploy": "deno task deploy"
-  }
+  },
+  "sideEffects": false
 }

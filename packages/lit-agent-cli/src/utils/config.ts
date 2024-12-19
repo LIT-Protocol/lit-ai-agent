@@ -45,7 +45,7 @@ export const ConfigManager = {
     }
   },
 
-  clearConfig(): void {
+  async clearConfig(): Promise<void> {
     try {
       if (fs.existsSync(CONFIG_PATH)) {
         fs.unlinkSync(CONFIG_PATH);

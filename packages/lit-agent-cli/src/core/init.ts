@@ -13,8 +13,9 @@ const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
 
 export const initLitProtocol = async (config: InitConfig) => {
   let capacityTokenId = config.capacityTokenId;
-  let pkpPublicKey = config.pkpPublicKey;
-  if (capacityTokenId === null || pkpPublicKey === null) {
+  let pkp = config.pkp;
+
+  if (capacityTokenId === null || pkp.publicKey === null) {
     if (!ETHEREUM_PRIVATE_KEY) {
       throw new Error("ETHEREUM_PRIVATE_KEY environment variable is required");
     }
@@ -30,21 +31,28 @@ export const initLitProtocol = async (config: InitConfig) => {
     );
 
     if (capacityTokenId === null) {
+      capacityTokenId = await mintCapacityCredit(litContractsClient);
       await ConfigManager.saveConfig({
-        capacityTokenId: await mintCapacityCredit(litContractsClient),
+        capacityTokenId,
       });
     }
 
-    if (pkpPublicKey === null) {
+    if (pkp.publicKey === null) {
       const pkpInfo = await mintPkp(litContractsClient);
+      pkp = {
+        publicKey: pkpInfo.pkp.publicKey,
+        tokenId: pkpInfo.pkp.tokenId,
+        ethAddress: pkpInfo.pkp.ethAddress,
+      };
+
       await ConfigManager.saveConfig({
-        pkpPublicKey: pkpInfo.pkp.publicKey,
+        pkp,
       });
     }
   }
 
   return {
     capacityTokenId,
-    pkpPublicKey,
+    pkp,
   };
 };
