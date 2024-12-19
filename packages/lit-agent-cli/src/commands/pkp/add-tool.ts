@@ -39,7 +39,7 @@ export function registerAddToolCommand(program: Command): void {
           },
         ]);
 
-        console.log(`\nAdding ${selectedTool.name} to PKP...`);
+        console.log(`\nAdding ${selectedTool.name} tool to PKP...`);
         console.log("Tool details:");
         console.log(`- Package: ${selectedTool.package}`);
         console.log(`- IPFS ID: ${selectedTool.ipfsId}`);
@@ -60,7 +60,7 @@ export function registerAddToolCommand(program: Command): void {
 
         await addPermittedActionToPkp(config, selectedTool.ipfsId);
 
-        console.log(`\n✅ Successfully added ${selectedTool.name} to PKP`);
+        console.log(`\nSuccessfully added ${selectedTool.name} tool to PKP`);
       } catch (error) {
         if (error instanceof Error) {
           command.error(`Error adding tool to PKP: ${error.message}`);
