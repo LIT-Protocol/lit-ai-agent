@@ -35,7 +35,7 @@ export default async () => {
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
       params.user, // The user who owns the PKP
       pkpEthAddress, // The PKP address
-      params.ipfsCid // The IPFS CID of this Lit Action
+      params.recommendedCID // The IPFS CID of this Lit Action
     );
 
     if (!isPermitted) {
@@ -52,15 +52,52 @@ export default async () => {
     // Define the policy struct format
     const policyStruct = ["tuple(uint256 maxAmount, address[] allowedTokens)"];
 
-    const decodedPolicy = ethers.utils.defaultAbiCoder.decode(
-      policyStruct,
-      policy
-    )[0];
+    let decodedPolicy;
+    try {
+      decodedPolicy = ethers.utils.defaultAbiCoder.decode(
+        policyStruct,
+        policy
+      )[0];
 
-    console.log("Policy:", {
-      maxAmount: decodedPolicy.maxAmount.toString(),
-      allowedTokens: decodedPolicy.allowedTokens,
-    });
+      // Validate decoded policy
+      if (!decodedPolicy.maxAmount || !decodedPolicy.allowedTokens) {
+        throw new Error("Invalid policy format: missing required fields");
+      }
+
+      // Validate that maxAmount is a valid number
+      try {
+        ethers.BigNumber.from(decodedPolicy.maxAmount);
+      } catch {
+        throw new Error(
+          "Invalid policy format: maxAmount is not a valid number"
+        );
+      }
+
+      // Validate that allowedTokens contains valid addresses
+      if (!Array.isArray(decodedPolicy.allowedTokens)) {
+        throw new Error("Invalid policy format: allowedTokens is not an array");
+      }
+      for (const token of decodedPolicy.allowedTokens) {
+        if (!ethers.utils.isAddress(token)) {
+          throw new Error(
+            `Invalid policy format: ${token} is not a valid address`
+          );
+        }
+      }
+
+      console.log("Policy:", {
+        maxAmount: decodedPolicy.maxAmount.toString(),
+        allowedTokens: decodedPolicy.allowedTokens,
+      });
+    } catch (error) {
+      LitActions.setResponse({
+        response: JSON.stringify({
+          status: "error",
+          error: `Failed to decode policy: ${error.message}`,
+        }),
+      });
+      throw error;
+    }
 
     // Use the policy's allowed tokens
     const allowedTokens = decodedPolicy.allowedTokens;
