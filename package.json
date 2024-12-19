@@ -1,0 +1,17 @@
+{
+  "name": "lit-ai-agent",
+  "version": "0.1.0",
+  "description": "A Lit powered AI Agent tool",
+  "main": "src/index.ts",
+  "repository": "git@github.com:LIT-Protocol/lit-ai-agent.git",
+  "author": "Lit Protocol",
+  "license": "MIT",
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.31.0"
+  }
+}
