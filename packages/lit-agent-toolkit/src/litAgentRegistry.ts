@@ -7,6 +7,19 @@ export type LitAction = {
 };
 
 /**
+ * Safely parse JSON string, returning empty object if invalid
+ * @param jsonStr String to parse as JSON
+ * @returns Parsed JSON object or empty object if invalid
+ */
+function safeJsonParse(jsonStr: string): any {
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    return {};
+  }
+}
+
+/**
  * Get all permitted actions and their policies for a PKP
  * @param registry LitAgentRegistry contract instance
  * @param user Address of the user who owns the PKP
@@ -25,8 +38,8 @@ export async function getPermittedActions(
     ipfsCid,
     description: ethers.utils.toUtf8String(descriptions[index]),
     policy:
-      policies[index].length > 0
-        ? JSON.parse(ethers.utils.toUtf8String(policies[index]))
+      policies[index] && policies[index] !== "0x"
+        ? safeJsonParse(ethers.utils.toUtf8String(policies[index]))
         : {},
   }));
 }
@@ -58,7 +71,9 @@ export async function getActionPolicy(
     isPermitted,
     description: ethers.utils.toUtf8String(description),
     policy:
-      policy.length > 0 ? JSON.parse(ethers.utils.toUtf8String(policy)) : {},
+      policy && policy !== "0x"
+        ? safeJsonParse(ethers.utils.toUtf8String(policy))
+        : {},
   };
 }
 

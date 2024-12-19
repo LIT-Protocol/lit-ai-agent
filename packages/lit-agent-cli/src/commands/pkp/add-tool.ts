@@ -66,6 +66,7 @@ export function registerAddToolCommand(program: Command): void {
           pkpAddress: config.pkp!.ethAddress!,
           ipfsCid: selectedTool.ipfsId,
           description: selectedTool.description,
+          command,
         });
         await policyTx.wait();
         console.log("Successfully set action policy in registry!");

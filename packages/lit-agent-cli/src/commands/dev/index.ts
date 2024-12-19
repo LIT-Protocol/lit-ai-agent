@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { ethers } from "ethers";
+import { validateEnvVar } from "../../utils/env";
 
 export function registerDevCommands(program: Command): void {
   const devCommand = program
@@ -10,14 +11,12 @@ export function registerDevCommands(program: Command): void {
     .command("fundLitWallet")
     .description("Fund the Lit wallet from Anvil dev wallet")
     .option("-a, --amount <amount>", "Amount of ETH to send", "1")
-    .action(async (options) => {
+    .action(async (options, command) => {
       try {
-        const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
-        if (!ETHEREUM_PRIVATE_KEY) {
-          throw new Error(
-            "ETHEREUM_PRIVATE_KEY environment variable is required"
-          );
-        }
+        const ethereumPrivateKey = validateEnvVar(
+          "ETHEREUM_PRIVATE_KEY",
+          command
+        );
 
         // Connect to local Anvil node
         const provider = new ethers.providers.JsonRpcProvider(
@@ -32,7 +31,7 @@ export function registerDevCommands(program: Command): void {
         );
 
         // Get the Lit wallet address from the private key
-        const litWallet = new ethers.Wallet(ETHEREUM_PRIVATE_KEY);
+        const litWallet = new ethers.Wallet(ethereumPrivateKey);
         const litWalletAddress = litWallet.address;
 
         console.log(

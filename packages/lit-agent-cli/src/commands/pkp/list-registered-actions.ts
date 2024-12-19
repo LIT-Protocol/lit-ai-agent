@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { ethers } from "ethers";
 import { ConfigManager } from "../../utils/config";
 import { getAvailableTools } from "../../utils/tools";
+import { validateEnvVar } from "../../utils/env";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",
@@ -23,21 +24,15 @@ export function registerListRegisteredActionsCommand(program: Command): void {
           );
         }
 
-        const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
-        const LIT_AGENT_REGISTRY_ADDRESS =
-          process.env.LIT_AGENT_REGISTRY_ADDRESS;
-
-        if (!ETHEREUM_PRIVATE_KEY) {
-          throw new Error(
-            "ETHEREUM_PRIVATE_KEY environment variable is required"
-          );
-        }
-
-        if (!LIT_AGENT_REGISTRY_ADDRESS) {
-          throw new Error(
-            "LIT_AGENT_REGISTRY_ADDRESS environment variable is required"
-          );
-        }
+        // Validate environment variables
+        const ethereumPrivateKey = validateEnvVar(
+          "ETHEREUM_PRIVATE_KEY",
+          command
+        );
+        const litAgentRegistryAddress = validateEnvVar(
+          "LIT_AGENT_REGISTRY_ADDRESS",
+          command
+        );
 
         // Get all available tools for metadata lookup
         const availableTools = getAvailableTools();
@@ -53,9 +48,9 @@ export function registerListRegisteredActionsCommand(program: Command): void {
         const provider = new ethers.providers.JsonRpcProvider(
           "http://localhost:8545"
         );
-        const signer = new ethers.Wallet(ETHEREUM_PRIVATE_KEY, provider);
+        const signer = new ethers.Wallet(ethereumPrivateKey, provider);
         const registry = new ethers.Contract(
-          LIT_AGENT_REGISTRY_ADDRESS,
+          litAgentRegistryAddress,
           LIT_AGENT_REGISTRY_ABI,
           signer
         );

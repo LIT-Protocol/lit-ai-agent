@@ -829,7 +829,7 @@
     ethers "^5.7.1"
     tslib "1.14.1"
 
-"@lit-protocol/auth-helpers@7.0.2":
+"@lit-protocol/auth-helpers@7.0.2", "@lit-protocol/auth-helpers@^7.0.2":
   version "7.0.2"
   resolved "https://registry.npmjs.org/@lit-protocol/auth-helpers/-/auth-helpers-7.0.2.tgz"
   integrity sha512-8917XgmuAEzXWPsyYSQcAlzmDWJ4xKabMroGObduY1RtsD0yq1o3azt+8kW0J7YDLmGRBGTGvVh2c1IQpCzXfQ==
