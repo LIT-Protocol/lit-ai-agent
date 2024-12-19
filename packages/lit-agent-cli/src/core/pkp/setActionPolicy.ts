@@ -1,4 +1,6 @@
 import { ethers } from "ethers";
+import { Command } from "commander";
+import { validateEnvVar } from "../../utils/env";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function setActionPolicy(address pkp, string calldata ipfsCid, bytes calldata description, bytes calldata policy) external",
@@ -9,6 +11,7 @@ interface SetActionPolicyParams {
   ipfsCid: string;
   description: string;
   policy?: any;
+  command: Command;
 }
 
 export async function setActionPolicy({
@@ -16,26 +19,20 @@ export async function setActionPolicy({
   ipfsCid,
   description,
   policy,
+  command,
 }: SetActionPolicyParams): Promise<ethers.ContractTransaction> {
-  const ETHEREUM_PRIVATE_KEY = process.env.ETHEREUM_PRIVATE_KEY;
-  const LIT_AGENT_REGISTRY_ADDRESS = process.env.LIT_AGENT_REGISTRY_ADDRESS;
-
-  if (!ETHEREUM_PRIVATE_KEY) {
-    throw new Error("ETHEREUM_PRIVATE_KEY environment variable is required");
-  }
-
-  if (!LIT_AGENT_REGISTRY_ADDRESS) {
-    throw new Error(
-      "LIT_AGENT_REGISTRY_ADDRESS environment variable is required"
-    );
-  }
+  const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
+  const litAgentRegistryAddress = validateEnvVar(
+    "LIT_AGENT_REGISTRY_ADDRESS",
+    command
+  );
 
   const provider = new ethers.providers.JsonRpcProvider(
     "http://localhost:8545"
   );
-  const signer = new ethers.Wallet(ETHEREUM_PRIVATE_KEY, provider);
+  const signer = new ethers.Wallet(ethereumPrivateKey, provider);
   const registry = new ethers.Contract(
-    LIT_AGENT_REGISTRY_ADDRESS,
+    litAgentRegistryAddress,
     LIT_AGENT_REGISTRY_ABI,
     signer
   );

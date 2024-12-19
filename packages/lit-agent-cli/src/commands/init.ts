@@ -125,7 +125,7 @@ export function registerInitCommand(program: Command): void {
           await ConfigManager.saveConfig(config);
 
           console.log("\nInitializing Lit Protocol...");
-          const result = await initLitProtocol(config);
+          const result = await initLitProtocol(command, config);
 
           if (result.capacityTokenId || result.pkp.publicKey) {
             console.log("\nMinted Resources Summary:");
