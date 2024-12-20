@@ -8,6 +8,15 @@ import {
 } from "lit-agent-tool-uniswap";
 
 import {
+  sendERC20Metadata,
+  sendERC20LitActionDescription,
+  SendERC20Policy,
+  sendERC20PolicySchema,
+  encodeSendERC20Policy,
+  decodeSendERC20Policy,
+} from "lit-agent-tool-send-erc20";
+
+import {
   signerMetadata,
   signerLitActionDescription,
   SignerPolicy,
@@ -36,6 +45,15 @@ export const getAvailableTools = (): LitAgentTool[] => {
       policySchema: swapPolicySchema,
       encodePolicyFn: encodeSwapPolicy,
       decodePolicyFn: decodeSwapPolicy,
+    },
+    {
+      name: "SendERC20",
+      description: sendERC20LitActionDescription,
+      ipfsId: sendERC20Metadata.sendERC20LitAction.IpfsHash,
+      package: "lit-agent-tool-send-erc20",
+      policySchema: sendERC20PolicySchema,
+      encodePolicyFn: encodeSendERC20Policy,
+      decodePolicyFn: decodeSendERC20Policy,
     },
     {
       name: "Signer",
