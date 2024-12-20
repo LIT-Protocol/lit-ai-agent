@@ -41,8 +41,9 @@ export async function analyzeUserIntentAndMatchAction(
           - recommendedCID: the exact ipfsCid if there's a match, or "" if no clear match
           - tokenIn: (for swaps) the input token address as a string
           - tokenOut: (for swaps) the output token address as a string
-          - amountIn: the input amount as a string
+          - amountIn: (for swaps)the input amount as a string
           - recipientAddress: (for sends) the recipient address as a string
+          - inputString: (for signing) the input string as a string
           
           Do not nest parameters in a 'parameters' object.`,
       },

@@ -19,7 +19,18 @@ async function promptForPolicy(
 
   // Handle each property in sequence
   for (const [key, prop] of Object.entries<any>(schema.properties)) {
-    if (prop.type === "array") {
+    if (prop.type === "boolean") {
+      // Special handling for boolean values
+      const { value } = await inquirer.prompt<{ value: boolean }>([
+        {
+          type: "confirm",
+          name: "value",
+          message: prop.description,
+          default: prop.default,
+        },
+      ]);
+      answers[key] = value;
+    } else if (prop.type === "array") {
       console.log(`\n${prop.description}`);
       if (prop.example) {
         console.log("Examples:", JSON.stringify(prop.example, null, 2));
