@@ -106,8 +106,7 @@ export async function processAgentRequest(
           rpcUrl: chainToSubmitTxnOnRpcUrl,
           chainId: parseInt(chainToSubmitTxnOnChainId),
         },
-        publicKey: config.pkp!.publicKey!,
-        pkpEthAddress: config.pkp!.ethAddress!,
+        pkp: config.pkp,
         params: {
           ...analysis,
           user: ethersSigner.address,

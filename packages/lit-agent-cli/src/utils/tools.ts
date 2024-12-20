@@ -7,6 +7,15 @@ import {
   decodeSwapPolicy,
 } from "lit-agent-tool-uniswap";
 
+import {
+  signerMetadata,
+  signerLitActionDescription,
+  SignerPolicy,
+  signerPolicySchema,
+  encodeSignerPolicy,
+  decodeSignerPolicy,
+} from "lit-agent-tool-signer";
+
 export interface LitAgentTool {
   name: string;
   description: string;
@@ -27,6 +36,15 @@ export const getAvailableTools = (): LitAgentTool[] => {
       policySchema: swapPolicySchema,
       encodePolicyFn: encodeSwapPolicy,
       decodePolicyFn: decodeSwapPolicy,
+    },
+    {
+      name: "Signer",
+      description: signerLitActionDescription,
+      ipfsId: signerMetadata.signerLitAction.IpfsHash,
+      package: "lit-agent-tool-signer",
+      policySchema: signerPolicySchema,
+      encodePolicyFn: encodeSignerPolicy,
+      decodePolicyFn: decodeSignerPolicy,
     },
   ];
 };
