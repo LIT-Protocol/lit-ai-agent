@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { decodeSwapPolicy } from "lit-agent-tool-uniswap";
+import { decodeSendERC20Policy } from "lit-agent-tool-send-erc20";
 
 export type LitAction = {
   ipfsCid: string;
@@ -19,7 +19,7 @@ function decodePolicyBytes(policyBytes: string): any {
 
   try {
     // Try to decode as a Uniswap policy first
-    return decodeSwapPolicy(policyBytes);
+    return decodeSendERC20Policy(policyBytes);
   } catch (e) {
     // If decoding as Uniswap policy fails, try to decode as UTF-8 JSON
     try {
