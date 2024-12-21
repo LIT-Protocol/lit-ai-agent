@@ -1,0 +1,10 @@
+{
+  "name": "@lit-protocol/lit-agent-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "forge test",
+    "build": "forge build",
+    "deploy": "forge script"
+  }
+}
