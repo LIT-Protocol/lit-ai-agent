@@ -14,5 +14,12 @@
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "examples"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "examples",
+    "src/__tests__",
+    "**/__tests__/**"
+  ]
 }
