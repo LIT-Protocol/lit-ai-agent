@@ -11,7 +11,8 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"],
   "exclude": [
