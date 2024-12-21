@@ -1,23 +1,15 @@
-import {
-  mintCapacityCredit,
-  getLitContractsClient,
-  mintPkp,
-} from "lit-agent-toolkit";
 import { ethers } from "ethers";
-import { LIT_RPC } from "@lit-protocol/constants";
 import type { Command } from "commander";
 
-import type { InitConfig } from "../commands/init";
-import { ConfigManager } from "../utils/config";
 import { validateEnvVar } from "../utils/env";
+import { LitClient } from "lit-agent-signer";
+import type { InitConfig } from "../commands/init";
 
 const LIT_AGENT_REGISTRY_ABI = ["function registerPKP(address pkp) external"];
 
 export const initLitProtocol = async (command: Command, config: InitConfig) => {
-  let capacityTokenId = config.capacityTokenId;
-  let pkp = config.pkp;
-
-  if (capacityTokenId === null || pkp.publicKey === null) {
+  // Only mint new PKP and capacity credits if they don't exist
+  if (!config.pkp.publicKey || !config.capacityTokenId) {
     const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
     const litAgentRegistryAddress = validateEnvVar(
       "LIT_AGENT_REGISTRY_ADDRESS",
@@ -28,33 +20,21 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
       command
     );
 
-    const ethersSignerChronicleYellowstone = new ethers.Wallet(
-      ethereumPrivateKey,
-      new ethers.providers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE)
-    );
     const ethersSignerChainToSubmitTxnOn = new ethers.Wallet(
       ethereumPrivateKey,
       new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl)
     );
 
-    const litContractsClient = await getLitContractsClient(
-      ethersSignerChronicleYellowstone,
-      config.network
-    );
+    const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
+      litNetwork: config.network,
+    });
 
-    if (capacityTokenId === null) {
-      capacityTokenId = await mintCapacityCredit(litContractsClient);
-      await ConfigManager.saveConfig({
-        capacityTokenId,
-      });
-    }
-
-    if (pkp.publicKey === null) {
-      const pkpInfo = await mintPkp(litContractsClient);
-      pkp = {
-        publicKey: pkpInfo.pkp.publicKey,
-        tokenId: pkpInfo.pkp.tokenId,
-        ethAddress: pkpInfo.pkp.ethAddress,
+    if (!config.pkp.publicKey) {
+      const walletInfo = await litClient.createWallet();
+      config.pkp = {
+        publicKey: walletInfo.pkp.publicKey,
+        tokenId: walletInfo.pkp.tokenId,
+        ethAddress: walletInfo.pkp.ethAddress,
       };
 
       // Register the PKP with the LitAgentRegistry
@@ -66,7 +46,7 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
 
       try {
         console.log("Registering PKP with LitAgentRegistry...");
-        const tx = await registryContract.registerPKP(pkp.ethAddress);
+        const tx = await registryContract.registerPKP(config.pkp.ethAddress);
         await tx.wait();
         console.log("Successfully registered PKP with LitAgentRegistry");
         console.log(`Transaction hash: ${tx.hash}`);
@@ -74,15 +54,17 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
         console.error("Failed to register PKP with LitAgentRegistry:", error);
         throw error;
       }
-
-      await ConfigManager.saveConfig({
-        pkp,
-      });
     }
+
+    if (!config.capacityTokenId) {
+      config.capacityTokenId = litClient.getCapacityCreditId();
+    }
+
+    await litClient.disconnect();
   }
 
   return {
-    capacityTokenId,
-    pkp,
+    capacityTokenId: config.capacityTokenId,
+    pkp: config.pkp,
   };
 };

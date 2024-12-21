@@ -20,7 +20,7 @@ async function getDescription() {
 
   const code = result.outputFiles[0].text;
   const match = code.match(
-    /const uniswapLitActionDescription\s*=\s*["']([^"']+)["']/
+    /const sendERC20LitActionDescription\s*=\s*["']([^"']+)["']/
   );
 
   if (!match) {
@@ -76,7 +76,7 @@ async function getExistingMetadata() {
       "utf-8"
     );
     const metadata = JSON.parse(content);
-    return metadata.uniswapLitAction || {};
+    return metadata.sendERC20LitAction || {};
   } catch (error) {
     return {};
   }
@@ -93,17 +93,17 @@ async function generateIndexFiles(ipfsMetadata = {}) {
   // Use existing metadata if no new metadata is provided
   const metadata =
     Object.keys(ipfsMetadata).length > 0
-      ? ipfsMetadata.uniswapLitAction
+      ? ipfsMetadata.sendERC20LitAction
       : existingMetadata;
 
   // Create the JavaScript content
   const jsContent = `
-export const uniswapLitActionDescription = ${JSON.stringify(description)};
+export const sendERC20LitActionDescription = ${JSON.stringify(description)};
 
-export const uniswapLitAction = ${JSON.stringify(actionString)};
+export const sendERC20LitAction = ${JSON.stringify(actionString)};
 
-export const uniswapMetadata = {
-  uniswapLitAction: {
+export const sendERC20Metadata = {
+  sendERC20LitAction: {
     IpfsHash: ${JSON.stringify(metadata.IpfsHash || "")},
     PinSize: ${metadata.PinSize || 0},
     Timestamp: ${JSON.stringify(metadata.Timestamp || "")},
@@ -117,7 +117,7 @@ export * from "./policy";
 
   // Create the TypeScript declaration content
   const dtsContent = `
-export type UniswapMetadata = {
+export type SendERC20Metadata = {
   IpfsHash: string;
   PinSize: number;
   Timestamp: string;
@@ -125,12 +125,12 @@ export type UniswapMetadata = {
   Duration: number;
 };
 
-export type UniswapLitActionString = string;
+export type SendERC20LitActionString = string;
 
-export declare const uniswapLitActionDescription: string;
-export declare const uniswapLitAction: UniswapLitActionString;
-export declare const uniswapMetadata: {
-  uniswapLitAction: UniswapMetadata;
+export declare const sendERC20LitActionDescription: string;
+export declare const sendERC20LitAction: SendERC20LitActionString;
+export declare const sendERC20Metadata: {
+  sendERC20LitAction: SendERC20Metadata;
 };
 
 export * from "./policy";
