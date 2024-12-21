@@ -101,7 +101,6 @@ async function main() {
     console.log("Waiting for filesystem to sync...");
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // Read the action string
     const litActionPath = join(rootDir, "dist", "litAction.js");
     console.log('Reading from:', litActionPath);
     const actionString = await fs.readFile(litActionPath, "utf-8");
@@ -111,6 +110,7 @@ async function main() {
       console.error("Generated code appears malformed:", actionString.substring(0, 100));
       throw new Error("Generated code is not in the expected format");
     }
+
 
     const startTime = Date.now();
     const pinataResponse = await uploadToPinata(PINATA_JWT, actionString);
