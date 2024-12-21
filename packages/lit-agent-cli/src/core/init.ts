@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import type { Command } from "commander";
-import { LIT_NETWORK } from "@lit-protocol/constants";
 
 import { validateEnvVar } from "../utils/env";
 import { LitClient } from "lit-agent-signer";

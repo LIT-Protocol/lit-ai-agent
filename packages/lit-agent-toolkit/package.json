@@ -7,7 +7,6 @@
     "@lit-protocol/auth-helpers": "^7.0.2",
     "@lit-protocol/constants": "^7.0.2",
     "@lit-protocol/contracts-sdk": "^7.0.2",
-    "@lit-protocol/lit-agent-signer": "^0.3.0",
     "@lit-protocol/lit-node-client": "^7.0.2",
     "@safe-global/protocol-kit": "^5.1.1",
     "ethers": "v5",

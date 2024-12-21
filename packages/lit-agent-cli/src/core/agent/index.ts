@@ -73,7 +73,7 @@ export async function processAgentRequest(
   if (!matchedAction) {
     console.log("\n❌ No matching action found for your request.");
     console.log(
-      "Please try rephrasing your request or check available actions with 'lit-agent pkp list-actions'"
+      "Please try rephrasing your request or check available actions with 'lit-agent pkp list-registered-actions'"
     );
 
     return;
