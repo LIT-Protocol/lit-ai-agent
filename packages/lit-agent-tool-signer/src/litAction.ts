@@ -35,13 +35,13 @@ export default async () => {
     const registryContract = new ethers.Contract(
       LIT_AGENT_REGISTRY_ADDRESS,
       LIT_AGENT_REGISTRY_ABI,
-      new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl),
+      new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl)
     );
 
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
       params.user,
       pkp.ethAddress,
-      params.ipfsCid,
+      params.ipfsCid
     );
 
     if (!isPermitted) {
@@ -54,7 +54,7 @@ export default async () => {
     try {
       decodedPolicy = ethers.utils.defaultAbiCoder.decode(
         policyStruct,
-        policy,
+        policy
       )[0];
 
       if (!decodedPolicy.allowAll) {
@@ -62,14 +62,14 @@ export default async () => {
       }
     } catch (error) {
       throw new Error(
-        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`
       );
     }
 
     // Sign the message
     const signature = await Lit.Actions.signEcdsa({
       toSign: ethers.utils.arrayify(
-        ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params.inputString)),
+        ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params.inputString))
       ),
       publicKey: pkp.publicKey,
       sigName: "sig",
@@ -85,7 +85,7 @@ export default async () => {
     Lit.Actions.setResponse({
       response: JSON.stringify({
         status: "error",
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }),
     });
   }
