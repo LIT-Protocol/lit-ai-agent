@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import { ethers } from "ethers";
-import { ConfigManager } from "../../utils/config";
 import { getAvailableTools } from "../../utils/tools";
 import { validateEnvVar } from "../../utils/env";
+import { readPkpFromStorage } from "lit-agent-signer";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",
@@ -37,9 +37,9 @@ export function registerListRegisteredActionsCommand(program: Command): void {
     )
     .action(async (_, command) => {
       try {
-        const config = await ConfigManager.loadConfig();
+        const pkp = readPkpFromStorage();
 
-        if (!config.pkp?.tokenId || !config.pkp?.ethAddress) {
+        if (!pkp?.tokenId || !pkp?.ethAddress) {
           command.error(
             "No PKP found in config. Please run 'lit-agent init' first."
           );
@@ -93,7 +93,7 @@ export function registerListRegisteredActionsCommand(program: Command): void {
         const [ipfsCids, descriptions, policies] =
           await registry.getRegisteredActions(
             signer.address,
-            config.pkp!.ethAddress!
+            pkp!.ethAddress!
           );
 
         if (ipfsCids.length === 0) {

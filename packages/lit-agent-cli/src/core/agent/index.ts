@@ -1,15 +1,13 @@
 import { OpenAI } from "openai";
 import { ethers } from "ethers";
 import {
-  analyzeUserIntentAndMatchAction,
-  executeLitAction,
-  getLitNodeClient,
+  analyzeUserIntentAndMatchAction
 } from "lit-agent-toolkit";
 import { Command } from "commander";
 
-import { ConfigManager } from "../../utils/config";
 import { validateEnvVar } from "../../utils/env";
-import type { LitNodeClient } from "@lit-protocol/lit-node-client";
+
+import { readPkpFromStorage, readNetworkFromStorage, LitClient } from "lit-agent-signer";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",
@@ -24,9 +22,9 @@ export async function processAgentRequest(
   prompt: string,
   command: Command
 ): Promise<void> {
-  const config = await ConfigManager.loadConfig();
+  const pkp = readPkpFromStorage();
 
-  if (!config.pkp?.tokenId) {
+  if (!pkp?.tokenId) {
     command.error("No PKP found in config. Please run 'lit-agent init' first.");
   }
 
@@ -67,7 +65,7 @@ export async function processAgentRequest(
     prompt,
     litAgentRegistryContract,
     ethersSigner.address,
-    config.pkp!.ethAddress!
+    pkp!.ethAddress!
   );
 
   console.log(`My analysis: ${JSON.stringify(analysis, null, 2)}`);
@@ -93,32 +91,31 @@ export async function processAgentRequest(
   if (analysis.recipientAddress)
     console.log(`- Recipient: ${analysis.recipientAddress}`);
 
-  let litNodeClient: LitNodeClient;
+  const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+    litNetwork: readNetworkFromStorage()!,
+  });
   try {
-    litNodeClient = await getLitNodeClient(config.network!);
-    const executionResult = await executeLitAction(
-      litNodeClient,
-      ethersSigner,
-      { publicKey: config.pkp!.publicKey!, tokenId: config.pkp!.tokenId! },
-      matchedAction.ipfsCid,
-      {
+    const executionResult = await litClient.executeJs({
+      ipfsId: matchedAction.ipfsCid,
+      jsParams: {
         chainInfo: {
           rpcUrl: chainToSubmitTxnOnRpcUrl,
           chainId: parseInt(chainToSubmitTxnOnChainId),
         },
-        pkp: config.pkp,
+        pkp,
         params: {
           ...analysis,
           user: ethersSigner.address,
           ipfsCid: matchedAction.ipfsCid,
         },
       }
-    );
+    });
 
     console.log(
       `Execution result: ${JSON.stringify(executionResult, null, 2)}`
     );
+
   } finally {
-    litNodeClient!.disconnect();
+    await litClient.disconnect();
   }
 }

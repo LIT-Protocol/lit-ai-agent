@@ -1,9 +1,9 @@
 import { Command } from "commander";
 import { ethers } from "ethers";
 
-import { ConfigManager } from "../../utils/config";
-import { listPermittedActions } from "../../core/pkp/listPermittedActions";
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
+import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { validateEnvVar } from "../../utils/env";
 
 export function registerListActionsCommand(program: Command): void {
   program
@@ -11,16 +11,21 @@ export function registerListActionsCommand(program: Command): void {
     .description("List all permitted actions for the PKP")
     .action(async (_, command) => {
       try {
-        const config = await ConfigManager.loadConfig();
+        const pkp = readPkpFromStorage();
 
-        if (!config.pkp?.tokenId) {
+        if (!pkp?.tokenId) {
           command.error(
             "No PKP found in config. Please run 'lit-agent init' first."
           );
         }
 
+        const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+          litNetwork: readNetworkFromStorage()!,
+        });
         console.log("\nFetching permitted actions...");
-        const actions = await listPermittedActions(config);
+        const actions = await litClient.getPermittedActions();
+
+        litClient.disconnect();
 
         if (actions.length === 0) {
           console.log("No permitted actions found for this PKP.");

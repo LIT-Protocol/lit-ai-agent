@@ -17,11 +17,12 @@
     "commander": "^12.1.0",
     "ethers": "v5",
     "inquirer": "^9.2.15",
+    "lit-agent-signer": "*",
+    "lit-agent-tool-send-erc20": "*",
+    "lit-agent-tool-signer": "*",
     "lit-agent-tool-uniswap": "*",
     "lit-agent-toolkit": "*",
-    "openai": "^4.24.1",
-    "lit-agent-tool-send-erc20": "*",
-    "lit-agent-tool-signer": "*"
+    "openai": "^4.24.1"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",

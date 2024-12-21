@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { ConfigManager } from "../../utils/config";
+import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "lit-agent-signer";
 
 export function registerShowCommand(program: Command): void {
   program
@@ -7,30 +7,23 @@ export function registerShowCommand(program: Command): void {
     .description("Show current configuration")
     .action(async (_, command) => {
       try {
-        const currentConfig = await ConfigManager.loadConfig();
+        const network = readNetworkFromStorage();
+        const capacityTokenId = readCapacityTokenIdFromStorage();
+        const pkp = readPkpFromStorage();
 
-        if (Object.keys(currentConfig).length === 0) {
-          console.log(
-            "No configuration found. Run 'lit-agent init' to set up."
-          );
+        if (!network || !pkp) {
+          console.log("No configuration found. Run 'lit-agent init' to set up.");
           return;
         }
 
         console.log("\nCurrent Configuration:");
         console.log("---------------------");
-        console.log(`Config Location: ${ConfigManager.getConfigPath()}`);
-
-        // Format each config entry
-        Object.entries(currentConfig).forEach(([key, value]) => {
-          if (key === "pkp" && value) {
-            console.log("pkp:");
-            Object.entries(value).forEach(([pkpKey, pkpValue]) => {
-              console.log(`  ${pkpKey}: ${pkpValue || "Not set"}`);
-            });
-          } else {
-            console.log(`${key}: ${value || "Not set"}`);
-          }
-        });
+        console.log(`Network: ${network}`);
+        console.log(`Capacity Token ID: ${capacityTokenId}`);
+        console.log("\nPKP:");
+        console.log(`  Token ID: ${pkp.tokenId}`);
+        console.log(`  Public Key: ${pkp.publicKey}`);
+        console.log(`  ETH Address: ${pkp.ethAddress}`);
       } catch (error) {
         if (error instanceof Error) {
           command.error(`Error reading configuration: ${error.message}`);
