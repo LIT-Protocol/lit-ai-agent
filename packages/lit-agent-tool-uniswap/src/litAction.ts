@@ -92,15 +92,17 @@ export default async () => {
       if (!Array.isArray(decodedPolicy.allowedTokens)) {
         throw new Error("Invalid policy format: allowedTokens is not an array");
       }
-      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map((token) => {
-        if (!ethers.utils.isAddress(token)) {
-          throw new Error(
-            `Invalid policy format: ${token} is not a valid address`,
-          );
-        }
-        // Normalize to checksum address
-        return ethers.utils.getAddress(token);
-      });
+      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map(
+        (token: string) => {
+          if (!ethers.utils.isAddress(token)) {
+            throw new Error(
+              `Invalid policy format: ${token} is not a valid address`,
+            );
+          }
+          // Normalize to checksum address
+          return ethers.utils.getAddress(token);
+        },
+      );
     } catch (error) {
       throw new Error(
         `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
@@ -170,7 +172,7 @@ export default async () => {
     // -------------------------------------------------------------------------------------------
     console.log("Starting quote process...", { time: Date.now() - startTime });
     let bestQuote = null;
-    let bestFee = null;
+    let bestFee;
 
     console.log("Debug: Attempting to call Uniswap quoter");
     const quoterInterface = new ethers.utils.Interface([
@@ -221,6 +223,12 @@ export default async () => {
 
     if (!bestQuote) {
       const error = new Error("No valid pool found for this token pair");
+      console.error("Quote error:", error);
+      throw error;
+    }
+
+    if (!bestFee) {
+      const error = new Error("No valid fee found for this token pair");
       console.error("Quote error:", error);
       throw error;
     }
@@ -465,7 +473,6 @@ export default async () => {
       maxPriorityFeePerGas,
       nonce: nonce + 1,
       chainId: chainInfo.chainId,
-      type: 2,
     };
 
     console.log("Signing swap...", { time: Date.now() - startTime });
@@ -519,7 +526,7 @@ export default async () => {
     Lit.Actions.setResponse({
       response: JSON.stringify({
         status: "error",
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }),
     });
   }
