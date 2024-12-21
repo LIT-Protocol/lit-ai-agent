@@ -1,0 +1,36 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lit-protocol/agent-cli": ["packages/lit-agent-cli/src/index.ts"],
+      "@lit-protocol/agent-contracts": [
+        "packages/lit-agent-contracts/src/index.ts"
+      ],
+      "@lit-protocol/agent-signer": ["packages/lit-agent-signer/src/index.ts"],
+      "@lit-protocol/agent-tool-send-erc20": [
+        "packages/lit-agent-tool-send-erc20/src/index.ts"
+      ],
+      "@lit-protocol/agent-tool-signer": [
+        "packages/lit-agent-tool-signer/src/index.ts"
+      ],
+      "@lit-protocol/agent-tool-uniswap": [
+        "packages/lit-agent-tool-uniswap/src/index.ts"
+      ],
+      "@lit-protocol/agent-toolkit": ["packages/lit-agent-toolkit/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

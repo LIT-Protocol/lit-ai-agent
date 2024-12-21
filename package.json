@@ -19,6 +19,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@jest/types": "^29.6.3",
     "@nx/eslint": "20.3.0",
     "@nx/eslint-plugin": "^20.3.0",
     "@nx/jest": "20.3.0",
