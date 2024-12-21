@@ -2157,17 +2157,6 @@
     tslib "1.14.1"
     util "0.12.5"
 
-"@lit-protocol/lit-agent-signer@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@lit-protocol/lit-agent-signer/-/lit-agent-signer-0.3.0.tgz#3a525f8ba628170a2768a74c6aef6747960cd880"
-  integrity sha512-LmUZbnjNPdb6kTxQoVzUUPnmEJjHJ8B+GglzYZ5jgLNBuMXt6XZVUlDubci59lggBBQArwLdYU1h7sf9Jy3fFQ==
-  dependencies:
-    "@lit-protocol/auth-helpers" "^7"
-    "@lit-protocol/contracts-sdk" "^7"
-    "@lit-protocol/lit-node-client-nodejs" "^7"
-    ethers "^5.7.2"
-    node-localstorage "^3.0.5"
-
 "@lit-protocol/lit-node-client-nodejs@7.0.2", "@lit-protocol/lit-node-client-nodejs@^7":
   version "7.0.2"
   resolved "https://registry.npmjs.org/@lit-protocol/lit-node-client-nodejs/-/lit-node-client-nodejs-7.0.2.tgz"
