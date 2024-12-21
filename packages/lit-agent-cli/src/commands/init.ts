@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
 import { Command } from "commander";
 import { LIT_NETWORK } from "@lit-protocol/constants";
+import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "lit-agent-signer";
 
-import { ConfigManager } from "../utils/config";
 import { initLitProtocol } from "../core/init";
 
 export interface PKPInfo {
@@ -31,14 +31,12 @@ export function registerInitCommand(program: Command): void {
     .description("Initialize Lit Protocol configuration and clients")
     .action(async (_, command) => {
       try {
-        const existingConfig = await ConfigManager.loadConfig();
-
         const answers = await inquirer.prompt<InitPromptAnswers>([
           {
             type: "list",
             name: "network",
             message: "Which Lit network would you like to use?",
-            default: existingConfig?.network || "datil-test",
+            default: readNetworkFromStorage() || "datil-test",
             choices: [
               { name: "Datil Mainnet", value: "datil" },
               { name: "Datil Test Network", value: "datil-test" },
@@ -49,14 +47,14 @@ export function registerInitCommand(program: Command): void {
             type: "confirm",
             name: "hasCapacityToken",
             message: "Do you have an existing Capacity Credit token ID?",
-            default: !!existingConfig?.capacityTokenId,
+            default: !!readCapacityTokenIdFromStorage(),
           },
           {
             type: "input",
             name: "capacityTokenId",
             message: "Enter your Capacity Credit token ID:",
             when: (answers) => answers.hasCapacityToken,
-            default: existingConfig?.capacityTokenId || undefined,
+            default: readCapacityTokenIdFromStorage() || undefined,
             validate: (input) => {
               if (input.trim() === "") {
                 return "Token ID cannot be empty";
@@ -68,14 +66,14 @@ export function registerInitCommand(program: Command): void {
             type: "confirm",
             name: "hasPKP",
             message: "Do you have an existing PKP?",
-            default: !!existingConfig?.pkp?.publicKey,
+            default: !!readPkpFromStorage()?.publicKey,
           },
           {
             type: "input",
             name: "pkpPublicKey",
             message: "Enter your PKP public key:",
             when: (answers) => answers.hasPKP,
-            default: existingConfig?.pkp?.publicKey || undefined,
+            default: readPkpFromStorage()?.publicKey || undefined,
             validate: (input) => {
               if (input.trim() === "") {
                 return "Public key cannot be empty";
@@ -107,9 +105,6 @@ export function registerInitCommand(program: Command): void {
         console.log(
           `PKP Public Key: ${config.pkp.publicKey || "Will be minted"}`
         );
-        console.log(
-          `Config will be saved to: ${ConfigManager.getConfigPath()}`
-        );
 
         const { confirm } = await inquirer.prompt<{ confirm: boolean }>([
           {
@@ -122,7 +117,6 @@ export function registerInitCommand(program: Command): void {
 
         if (confirm) {
           console.log("\nSaving initial configuration...");
-          await ConfigManager.saveConfig(config);
 
           console.log("\nInitializing Lit Protocol...");
           const result = await initLitProtocol(command, config);

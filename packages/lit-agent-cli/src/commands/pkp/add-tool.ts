@@ -1,10 +1,10 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
 
-import { ConfigManager } from "../../utils/config";
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
-import { addPermittedActionToPkp } from "../../core/pkp/addPermittedAction";
 import { setActionPolicy } from "../../core/pkp/setActionPolicy";
+import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { validateEnvVar } from "../../utils/env";
 
 async function promptForPolicy(
   tool: LitAgentTool
@@ -85,9 +85,9 @@ export function registerAddToolCommand(program: Command): void {
     .description("Add a Lit Agent tool to a PKP")
     .action(async (_, command) => {
       try {
-        const config = await ConfigManager.loadConfig();
+        const pkp = readPkpFromStorage();
 
-        if (!config.pkp?.tokenId) {
+        if (!pkp?.tokenId) {
           command.error(
             "No PKP found in config. Please run 'lit-agent init' first."
           );
@@ -121,12 +121,18 @@ export function registerAddToolCommand(program: Command): void {
         // Prompt for policy configuration if the tool has a policy schema
         const encodedPolicy = await promptForPolicy(selectedTool);
 
-        await addPermittedActionToPkp(config, selectedTool.ipfsId);
+        const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+          litNetwork: readNetworkFromStorage()!,
+        });
+
+        await litClient.addPermittedAction({ ipfsId: selectedTool.ipfsId });
+
+        litClient.disconnect();
 
         console.log("Setting action policy in registry...");
         const policyTx = await setActionPolicy({
           command,
-          pkpAddress: config.pkp!.ethAddress!,
+          pkpAddress: pkp!.ethAddress!,
           ipfsCid: selectedTool.ipfsId,
           description: selectedTool.description,
           policy: encodedPolicy,
