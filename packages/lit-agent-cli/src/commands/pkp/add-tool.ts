@@ -3,11 +3,15 @@ import inquirer from "inquirer";
 
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
 import { setActionPolicy } from "../../core/pkp/setActionPolicy";
-import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
+import {
+  LitClient,
+  readNetworkFromStorage,
+  readPkpFromStorage,
+} from "@lit-protocol/agent-signer";
 import { validateEnvVar } from "../../utils/env";
 
 async function promptForPolicy(
-  tool: LitAgentTool
+  tool: LitAgentTool,
 ): Promise<string | undefined> {
   if (!tool.policySchema) {
     return undefined;
@@ -89,7 +93,7 @@ export function registerAddToolCommand(program: Command): void {
 
         if (!pkp?.tokenId) {
           command.error(
-            "No PKP found in config. Please run 'lit-agent init' first."
+            "No PKP found in config. Please run 'lit-agent init' first.",
           );
         }
 
@@ -121,9 +125,12 @@ export function registerAddToolCommand(program: Command): void {
         // Prompt for policy configuration if the tool has a policy schema
         const encodedPolicy = await promptForPolicy(selectedTool);
 
-        const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
-          litNetwork: readNetworkFromStorage()!,
-        });
+        const litClient = await LitClient.create(
+          "0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command),
+          {
+            litNetwork: readNetworkFromStorage()!,
+          },
+        );
 
         await litClient.addPermittedAction({ ipfsId: selectedTool.ipfsId });
 

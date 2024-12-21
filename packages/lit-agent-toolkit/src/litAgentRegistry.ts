@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { decodeSendERC20Policy } from "@lit-protocol/agent-tool-send-erc20";
 
 export type LitAction = {
   ipfsCid: string;
@@ -11,24 +10,10 @@ export type LitAction = {
  * Safely decode policy bytes using the appropriate decoder
  * @param policyBytes Raw policy bytes from the contract
  * @returns Decoded policy object or empty object if invalid
+ * @todo Implement this
  */
 function decodePolicyBytes(policyBytes: string): any {
-  if (!policyBytes || policyBytes === "0x") {
-    return {};
-  }
-
-  try {
-    // Try to decode as a Uniswap policy first
-    return decodeSendERC20Policy(policyBytes);
-  } catch (e) {
-    // If decoding as Uniswap policy fails, try to decode as UTF-8 JSON
-    try {
-      return JSON.parse(ethers.utils.toUtf8String(policyBytes));
-    } catch {
-      // If all decoding attempts fail, return empty object
-      return {};
-    }
-  }
+  return {};
 }
 
 /**
@@ -41,7 +26,7 @@ function decodePolicyBytes(policyBytes: string): any {
 export async function getPermittedActions(
   registry: ethers.Contract,
   user: string,
-  pkp: string
+  pkp: string,
 ): Promise<LitAction[]> {
   const [ipfsCids, descriptions, policies] =
     await registry.getRegisteredActions(user, pkp);
@@ -65,7 +50,7 @@ export async function getActionPolicy(
   registry: ethers.Contract,
   user: string,
   pkp: string,
-  ipfsCid: string
+  ipfsCid: string,
 ): Promise<{
   isPermitted: boolean;
   description: string;
@@ -74,7 +59,7 @@ export async function getActionPolicy(
   const [isPermitted, description, policy] = await registry.getActionPolicy(
     user,
     pkp,
-    ipfsCid
+    ipfsCid,
   );
   return {
     isPermitted,
@@ -96,12 +81,12 @@ export async function setActionPolicy(
   pkp: string,
   ipfsCid: string,
   description: string,
-  policy: any = {}
+  policy: any = {},
 ): Promise<ethers.ContractTransaction> {
   return registry.setActionPolicy(
     pkp,
     ipfsCid,
     ethers.utils.toUtf8Bytes(description),
-    policy // Policy should already be encoded bytes
+    policy, // Policy should already be encoded bytes
   );
 }

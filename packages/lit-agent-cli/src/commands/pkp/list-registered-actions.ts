@@ -33,7 +33,7 @@ export function registerListRegisteredActionsCommand(program: Command): void {
   program
     .command("list-registered-actions")
     .description(
-      "List all registered actions for the current PKP in the LitAgentRegistry"
+      "List all registered actions for the current PKP in the LitAgentRegistry",
     )
     .action(async (_, command) => {
       try {
@@ -41,22 +41,22 @@ export function registerListRegisteredActionsCommand(program: Command): void {
 
         if (!pkp?.tokenId || !pkp?.ethAddress) {
           command.error(
-            "No PKP found in config. Please run 'lit-agent init' first."
+            "No PKP found in config. Please run 'lit-agent init' first.",
           );
         }
 
         // Validate environment variables
         const ethereumPrivateKey = validateEnvVar(
           "ETHEREUM_PRIVATE_KEY",
-          command
+          command,
         );
         const litAgentRegistryAddress = validateEnvVar(
           "LIT_AGENT_REGISTRY_ADDRESS",
-          command
+          command,
         );
         const chainToSubmitTxnOnRpcUrl = validateEnvVar(
           "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
-          command
+          command,
         );
 
         // Get all available tools for metadata lookup
@@ -74,27 +74,24 @@ export function registerListRegisteredActionsCommand(program: Command): void {
             acc[base58Id] = tool;
             return acc;
           },
-          {} as Record<string, (typeof availableTools)[0]>
+          {} as Record<string, (typeof availableTools)[0]>,
         );
 
         // Connect to registry contract
         const provider = new ethers.providers.JsonRpcProvider(
-          chainToSubmitTxnOnRpcUrl
+          chainToSubmitTxnOnRpcUrl,
         );
         const signer = new ethers.Wallet(ethereumPrivateKey, provider);
         const registry = new ethers.Contract(
           litAgentRegistryAddress,
           LIT_AGENT_REGISTRY_ABI,
-          signer
+          signer,
         );
 
         console.log("\nFetching registered actions...");
 
         const [ipfsCids, descriptions, policies] =
-          await registry.getRegisteredActions(
-            signer.address,
-            pkp!.ethAddress!
-          );
+          await registry.getRegisteredActions(signer.address, pkp!.ethAddress!);
 
         if (ipfsCids.length === 0) {
           console.log("No registered actions found for this PKP.");
@@ -129,7 +126,7 @@ export function registerListRegisteredActionsCommand(program: Command): void {
           if (toolMetadata) {
             console.log(`   Tool Name       : ${toolMetadata.name}`);
             console.log(
-              `   Description     : ${ethers.utils.toUtf8String(descriptions[i] || "0x")}`
+              `   Description     : ${ethers.utils.toUtf8String(descriptions[i] || "0x")}`,
             );
             console.log(`   Package         : ${toolMetadata.package}`);
           }
@@ -149,13 +146,13 @@ export function registerListRegisteredActionsCommand(program: Command): void {
                   "allowedTokens" in decodedPolicy
                 ) {
                   console.log(
-                    `     Max Amount    : ${ethers.utils.formatEther(decodedPolicy.maxAmount)} ETH`
+                    `     Max Amount    : ${ethers.utils.formatEther(decodedPolicy.maxAmount)} ETH`,
                   );
                   console.log("     Allowed Tokens:");
                   decodedPolicy.allowedTokens.forEach(
                     (token: string, index: number) => {
                       console.log(`       ${index + 1}. ${token}`);
-                    }
+                    },
                   );
                 } else {
                   // For other policy types, display all properties
@@ -165,7 +162,7 @@ export function registerListRegisteredActionsCommand(program: Command): void {
                 }
               } catch (error) {
                 console.log(
-                  `     Error decoding policy: ${(error as Error).message}`
+                  `     Error decoding policy: ${(error as Error).message}`,
                 );
                 displayRawPolicyBytes(policyBytes);
               }
@@ -195,6 +192,6 @@ function displayRawPolicyBytes(policyBytes: string) {
     console.log(`     Raw Policy Bytes: ${policyBytes}`);
   }
   console.log(
-    "     (Unable to decode policy - may be using a different format)"
+    "     (Unable to decode policy - may be using a different format)",
   );
 }

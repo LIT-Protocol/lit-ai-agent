@@ -1,18 +1,28 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020"],
-    "module": "es2022",
-    "rootDir": "packages/lit-agent-cli/src",
-    "moduleResolution": "node",
-    "types": ["mocha"],
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "references": [
-      { "path": "./packages/lit-agent-cli" },
-      { "path": "./packages/lit-agent-toolkit" }
-    ]
-  }
+    "baseUrl": ".",
+    "paths": {
+      "@lit-protocol/agent-cli": ["packages/lit-agent-cli/src"],
+      "@lit-protocol/agent-toolkit": ["packages/lit-agent-toolkit/src"],
+      "@lit-protocol/agent-contracts": ["packages/lit-agent-contracts/src"],
+      "@lit-protocol/agent-signer": ["packages/lit-agent-signer/src"],
+      "@lit-protocol/agent-tool-uniswap": [
+        "packages/lit-agent-tool-uniswap/src"
+      ],
+      "@lit-protocol/agent-tool-send-erc20": [
+        "packages/lit-agent-tool-send-erc20/src"
+      ],
+      "@lit-protocol/agent-tool-signer": ["packages/lit-agent-tool-signer/src"]
+    }
+  },
+  "references": [
+    { "path": "./packages/lit-agent-cli" },
+    { "path": "./packages/lit-agent-toolkit" },
+    { "path": "./packages/lit-agent-contracts" },
+    { "path": "./packages/lit-agent-signer" },
+    { "path": "./packages/lit-agent-tool-uniswap" },
+    { "path": "./packages/lit-agent-tool-send-erc20" },
+    { "path": "./packages/lit-agent-tool-signer" }
+  ]
 }

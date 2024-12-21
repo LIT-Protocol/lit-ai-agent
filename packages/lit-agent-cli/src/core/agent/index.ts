@@ -1,13 +1,15 @@
 import { OpenAI } from "openai";
 import { ethers } from "ethers";
-import {
-  analyzeUserIntentAndMatchAction
-} from "@lit-protocol/agent-toolkit";
+import { analyzeUserIntentAndMatchAction } from "@lit-protocol/agent-toolkit";
 import { Command } from "commander";
 
 import { validateEnvVar } from "../../utils/env";
 
-import { readPkpFromStorage, readNetworkFromStorage, LitClient } from "@lit-protocol/agent-signer";
+import {
+  readPkpFromStorage,
+  readNetworkFromStorage,
+  LitClient,
+} from "@lit-protocol/agent-signer";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",
@@ -20,7 +22,7 @@ export interface AnalysisResult {
 
 export async function processAgentRequest(
   prompt: string,
-  command: Command
+  command: Command,
 ): Promise<void> {
   const pkp = readPkpFromStorage();
 
@@ -32,16 +34,16 @@ export async function processAgentRequest(
   const openaiApiKey = validateEnvVar("OPENAI_API_KEY", command);
   const litAgentRegistryAddress = validateEnvVar(
     "LIT_AGENT_REGISTRY_ADDRESS",
-    command
+    command,
   );
   const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
   const chainToSubmitTxnOnRpcUrl = validateEnvVar(
     "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
-    command
+    command,
   );
   const chainToSubmitTxnOnChainId = validateEnvVar(
     "CHAIN_TO_SUBMIT_TXN_ON_CHAIN_ID",
-    command
+    command,
   );
 
   // Initialize OpenAI client
@@ -52,12 +54,12 @@ export async function processAgentRequest(
   console.log("\nAnalyzing your request...");
   const ethersSigner = new ethers.Wallet(
     ethereumPrivateKey,
-    new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl)
+    new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl),
   );
   const litAgentRegistryContract = new ethers.Contract(
     litAgentRegistryAddress,
     LIT_AGENT_REGISTRY_ABI,
-    ethersSigner
+    ethersSigner,
   );
 
   const { analysis, matchedAction } = await analyzeUserIntentAndMatchAction(
@@ -65,7 +67,7 @@ export async function processAgentRequest(
     prompt,
     litAgentRegistryContract,
     ethersSigner.address,
-    pkp!.ethAddress!
+    pkp!.ethAddress!,
   );
 
   console.log(`My analysis: ${JSON.stringify(analysis, null, 2)}`);
@@ -73,7 +75,7 @@ export async function processAgentRequest(
   if (!matchedAction) {
     console.log("\n❌ No matching action found for your request.");
     console.log(
-      "Please try rephrasing your request or check available actions with 'lit-agent pkp list-registered-actions'"
+      "Please try rephrasing your request or check available actions with 'lit-agent pkp list-registered-actions'",
     );
 
     return;
@@ -91,9 +93,12 @@ export async function processAgentRequest(
   if (analysis.recipientAddress)
     console.log(`- Recipient: ${analysis.recipientAddress}`);
 
-  const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
-    litNetwork: readNetworkFromStorage()!,
-  });
+  const litClient = await LitClient.create(
+    "0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command),
+    {
+      litNetwork: readNetworkFromStorage()!,
+    },
+  );
   try {
     const executionResult = await litClient.executeJs({
       ipfsId: matchedAction.ipfsCid,
@@ -108,13 +113,12 @@ export async function processAgentRequest(
           user: ethersSigner.address,
           ipfsCid: matchedAction.ipfsCid,
         },
-      }
+      },
     });
 
     console.log(
-      `Execution result: ${JSON.stringify(executionResult, null, 2)}`
+      `Execution result: ${JSON.stringify(executionResult, null, 2)}`,
     );
-
   } finally {
     await litClient.disconnect();
   }

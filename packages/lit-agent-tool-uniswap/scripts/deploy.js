@@ -44,7 +44,7 @@ async function uploadToPinata(pinataJwt, data) {
         Authorization: `Bearer ${pinataJwt}`,
       },
       body: formData,
-    }
+    },
   );
 
   if (!response.ok) {
@@ -102,15 +102,17 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const litActionPath = join(rootDir, "dist", "litAction.js");
-    console.log('Reading from:', litActionPath);
+    console.log("Reading from:", litActionPath);
     const actionString = await fs.readFile(litActionPath, "utf-8");
 
     // Verify the content looks correct
     if (!actionString.startsWith("(async () =>")) {
-      console.error("Generated code appears malformed:", actionString.substring(0, 100));
+      console.error(
+        "Generated code appears malformed:",
+        actionString.substring(0, 100),
+      );
       throw new Error("Generated code is not in the expected format");
     }
-
 
     const startTime = Date.now();
     const pinataResponse = await uploadToPinata(PINATA_JWT, actionString);

@@ -19,7 +19,8 @@ export const signerPolicySchema = {
   properties: {
     allowAll: {
       type: "boolean",
-      description: "WARNING: This will allow the PKP to sign ANY message. Are you sure you want to enable unrestricted signing?",
+      description:
+        "WARNING: This will allow the PKP to sign ANY message. Are you sure you want to enable unrestricted signing?",
       default: false,
     },
   },
@@ -35,7 +36,7 @@ export function encodeSignerPolicy(policy: SignerPolicy): string {
   // Encode the policy using a simple boolean
   return ethers.utils.defaultAbiCoder.encode(
     ["tuple(bool allowAll)"],
-    [{ allowAll: policy.allowAll }]
+    [{ allowAll: policy.allowAll }],
   );
 }
 
@@ -47,7 +48,7 @@ export function encodeSignerPolicy(policy: SignerPolicy): string {
 export function decodeSignerPolicy(encodedPolicy: string): SignerPolicy {
   const decoded = ethers.utils.defaultAbiCoder.decode(
     ["tuple(bool allowAll)"],
-    encodedPolicy
+    encodedPolicy,
   )[0];
 
   return {

@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export function registerRemoveCommand(program: Command): void {
   program
@@ -26,7 +26,7 @@ export function registerRemoveCommand(program: Command): void {
           }
         }
 
-        const storagePath = path.resolve('../lit-session-storage');
+        const storagePath = path.resolve("../lit-session-storage");
         if (fs.existsSync(storagePath)) {
           fs.rmSync(storagePath, { recursive: true, force: true });
           console.log("@lit-protocol/session-storage removed successfully");
@@ -38,7 +38,7 @@ export function registerRemoveCommand(program: Command): void {
           command.error(`Error removing lit-session-storage: ${error.message}`);
         } else {
           command.error(
-            "An unknown error occurred while removing lit-session-storage"
+            "An unknown error occurred while removing lit-session-storage",
           );
         }
       }

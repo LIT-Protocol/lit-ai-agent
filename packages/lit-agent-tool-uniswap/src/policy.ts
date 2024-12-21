@@ -69,7 +69,7 @@ export function encodeSwapPolicy(policy: SwapPolicy): string {
         maxAmount: policy.maxAmount,
         allowedTokens: policy.allowedTokens,
       },
-    ]
+    ],
   );
 }
 
@@ -81,7 +81,7 @@ export function encodeSwapPolicy(policy: SwapPolicy): string {
 export function decodeSwapPolicy(encodedPolicy: string): SwapPolicy {
   const decoded = ethers.utils.defaultAbiCoder.decode(
     ["tuple(uint256 maxAmount, address[] allowedTokens)"],
-    encodedPolicy
+    encodedPolicy,
   )[0];
 
   return {
