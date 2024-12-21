@@ -24,21 +24,21 @@ export async function setActionPolicy({
   const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
   const litAgentRegistryAddress = validateEnvVar(
     "LIT_AGENT_REGISTRY_ADDRESS",
-    command
+    command,
   );
   const chainToSubmitTxnOnRpcUrl = validateEnvVar(
     "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
-    command
+    command,
   );
 
   const provider = new ethers.providers.JsonRpcProvider(
-    chainToSubmitTxnOnRpcUrl
+    chainToSubmitTxnOnRpcUrl,
   );
   const signer = new ethers.Wallet(ethereumPrivateKey, provider);
   const registry = new ethers.Contract(
     litAgentRegistryAddress,
     LIT_AGENT_REGISTRY_ABI,
-    signer
+    signer,
   );
 
   const descriptionBytes = ethers.utils.toUtf8Bytes(description);
@@ -48,7 +48,7 @@ export async function setActionPolicy({
     pkpAddress,
     ipfsCid,
     descriptionBytes,
-    policyBytes
+    policyBytes,
   );
 
   return tx;

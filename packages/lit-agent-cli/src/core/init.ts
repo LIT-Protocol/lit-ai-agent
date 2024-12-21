@@ -13,21 +13,24 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
     const ethereumPrivateKey = validateEnvVar("ETHEREUM_PRIVATE_KEY", command);
     const litAgentRegistryAddress = validateEnvVar(
       "LIT_AGENT_REGISTRY_ADDRESS",
-      command
+      command,
     );
     const chainToSubmitTxnOnRpcUrl = validateEnvVar(
       "CHAIN_TO_SUBMIT_TXN_ON_RPC_URL",
-      command
+      command,
     );
 
     const ethersSignerChainToSubmitTxnOn = new ethers.Wallet(
       ethereumPrivateKey,
-      new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl)
+      new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl),
     );
 
-    const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
-      litNetwork: config.network,
-    });
+    const litClient = await LitClient.create(
+      "0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command),
+      {
+        litNetwork: config.network,
+      },
+    );
 
     if (!config.pkp.publicKey) {
       const walletInfo = await litClient.createWallet();
@@ -41,7 +44,7 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
       const registryContract = new ethers.Contract(
         litAgentRegistryAddress,
         LIT_AGENT_REGISTRY_ABI,
-        ethersSignerChainToSubmitTxnOn
+        ethersSignerChainToSubmitTxnOn,
       );
 
       try {

@@ -1,16 +1,19 @@
-//@ts-nocheck
+declare global {
+  const LitAuth: any;
+}
 
 export default async () => {
   try {
     const ethersProvider = new ethers.providers.JsonRpcProvider(
-      chainInfo.rpcUrl
+      chainInfo.rpcUrl,
     );
 
     // Policy Checks
     const LIT_AGENT_REGISTRY_ABI = [
       "function getActionPolicy(address user, address pkp, string calldata ipfsCid) external view returns (bool isPermitted, bytes memory description, bytes memory policy)",
     ];
-    const LIT_AGENT_REGISTRY_ADDRESS = "0x728e8162603F35446D09961c4A285e2643f4FB91";
+    const LIT_AGENT_REGISTRY_ADDRESS =
+      "0x728e8162603F35446D09961c4A285e2643f4FB91";
 
     // Validate auth parameters
     if (!LitAuth.authSigAddress) {
@@ -27,13 +30,13 @@ export default async () => {
     const registryContract = new ethers.Contract(
       LIT_AGENT_REGISTRY_ADDRESS,
       LIT_AGENT_REGISTRY_ABI,
-      ethersProvider
+      ethersProvider,
     );
 
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
       LitAuth.authSigAddress,
       pkp.ethAddress,
-      LitAuth.actionIpfsIds[0]
+      LitAuth.actionIpfsIds[0],
     );
 
     if (!isPermitted) {
@@ -41,29 +44,40 @@ export default async () => {
     }
 
     // Decode and validate policy
-    const policyStruct = ["tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)"];
+    const policyStruct = [
+      "tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)",
+    ];
     let decodedPolicy;
     try {
-      decodedPolicy = ethers.utils.defaultAbiCoder.decode(policyStruct, policy)[0];
-      if (!decodedPolicy.maxAmount || !decodedPolicy.allowedTokens || !decodedPolicy.allowedRecipients) {
+      decodedPolicy = ethers.utils.defaultAbiCoder.decode(
+        policyStruct,
+        policy,
+      )[0];
+      if (
+        !decodedPolicy.maxAmount ||
+        !decodedPolicy.allowedTokens ||
+        !decodedPolicy.allowedRecipients
+      ) {
         throw new Error("Invalid policy format: missing required fields");
       }
 
-      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map(token => 
-        ethers.utils.getAddress(token)
+      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map((token) =>
+        ethers.utils.getAddress(token),
       );
-      decodedPolicy.allowedRecipients = decodedPolicy.allowedRecipients.map(recipient => 
-        ethers.utils.getAddress(recipient)
+      decodedPolicy.allowedRecipients = decodedPolicy.allowedRecipients.map(
+        (recipient) => ethers.utils.getAddress(recipient),
       );
     } catch (error) {
       throw new Error(
-        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
     // Validate token and recipient against policy
     const normalizedTokenAddress = ethers.utils.getAddress(params.tokenIn);
-    const normalizedRecipientAddress = ethers.utils.getAddress(params.recipientAddress);
+    const normalizedRecipientAddress = ethers.utils.getAddress(
+      params.recipientAddress,
+    );
 
     if (!decodedPolicy.allowedTokens.includes(normalizedTokenAddress)) {
       throw new Error(`Token not allowed: ${normalizedTokenAddress}`);
@@ -77,19 +91,19 @@ export default async () => {
     const tokenInterface = new ethers.utils.Interface([
       "function decimals() view returns (uint8)",
       "function balanceOf(address account) view returns (uint256)",
-      "function transfer(address to, uint256 amount) external returns (bool)"
+      "function transfer(address to, uint256 amount) external returns (bool)",
     ]);
 
     const tokenContract = new ethers.Contract(
       params.tokenIn,
       tokenInterface,
-      ethersProvider
+      ethersProvider,
     );
 
     // Get token info
     const [decimals, balance] = await Promise.all([
       tokenContract.decimals(),
-      tokenContract.balanceOf(pkp.ethAddress)
+      tokenContract.balanceOf(pkp.ethAddress),
     ]);
 
     const amount = ethers.utils.parseUnits(params.amountIn, decimals);
@@ -97,15 +111,15 @@ export default async () => {
     // Check amount against policy maxAmount
     if (amount.gt(decodedPolicy.maxAmount)) {
       throw new Error(
-        `Amount exceeds policy limit. Max allowed: ${ethers.utils.formatUnits(decodedPolicy.maxAmount, decimals)}`
+        `Amount exceeds policy limit. Max allowed: ${ethers.utils.formatUnits(decodedPolicy.maxAmount, decimals)}`,
       );
     }
 
     // Check balance
     if (amount.gt(balance)) {
       throw new Error(
-        `Insufficient balance. PKP balance: ${ethers.utils.formatUnits(balance, decimals)}. ` + 
-        `Required: ${ethers.utils.formatUnits(amount, decimals)}`
+        `Insufficient balance. PKP balance: ${ethers.utils.formatUnits(balance, decimals)}. ` +
+          `Required: ${ethers.utils.formatUnits(amount, decimals)}`,
       );
     }
 
@@ -114,19 +128,23 @@ export default async () => {
       { waitForResponse: true, name: "gasPriceGetter" },
       async () => {
         const provider = new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
-        const baseFeeHistory = await provider.send("eth_feeHistory", ["0x1", "latest", []]);
+        const baseFeeHistory = await provider.send("eth_feeHistory", [
+          "0x1",
+          "latest",
+          [],
+        ]);
         const baseFee = ethers.BigNumber.from(baseFeeHistory.baseFeePerGas[0]);
         const nonce = await provider.getTransactionCount(pkp.ethAddress);
-    
+
         const priorityFee = baseFee.div(4);
         const maxFee = baseFee.mul(2);
-    
+
         return JSON.stringify({
           maxFeePerGas: maxFee.toHexString(),
           maxPriorityFeePerGas: priorityFee.toHexString(),
-          nonce
+          nonce,
         });
-      }
+      },
     );
 
     const parsedGasData = JSON.parse(gasData);
@@ -138,13 +156,16 @@ export default async () => {
       estimatedGasLimit = await tokenContract.estimateGas.transfer(
         params.recipientAddress,
         amount,
-        { from: pkp.ethAddress }
+        { from: pkp.ethAddress },
       );
       console.log("Estimated gas limit:", estimatedGasLimit.toString());
       // Add 20% buffer
       estimatedGasLimit = estimatedGasLimit.mul(120).div(100);
     } catch (error) {
-      console.error("Could not estimate gas. Using fallback gas limit of 100000.", error);
+      console.error(
+        "Could not estimate gas. Using fallback gas limit of 100000.",
+        error,
+      );
       estimatedGasLimit = ethers.BigNumber.from("100000");
     }
 
@@ -153,7 +174,7 @@ export default async () => {
       to: params.tokenIn,
       data: tokenInterface.encodeFunctionData("transfer", [
         params.recipientAddress,
-        amount
+        amount,
       ]),
       value: "0x0",
       gasLimit: estimatedGasLimit.toHexString(),
@@ -161,14 +182,14 @@ export default async () => {
       maxPriorityFeePerGas,
       nonce,
       chainId: chainInfo.chainId,
-      type: 2
+      type: 2,
     };
 
     // Sign transaction
     console.log("Signing transfer...");
     const transferSig = await Lit.Actions.signAndCombineEcdsa({
       toSign: ethers.utils.arrayify(
-        ethers.utils.keccak256(ethers.utils.serializeTransaction(transferTx))
+        ethers.utils.keccak256(ethers.utils.serializeTransaction(transferTx)),
       ),
       publicKey: pkp.publicKey,
       sigName: "erc20TransferSig",
@@ -180,7 +201,7 @@ export default async () => {
         r: "0x" + JSON.parse(transferSig).r.substring(2),
         s: "0x" + JSON.parse(transferSig).s,
         v: JSON.parse(transferSig).v,
-      })
+      }),
     );
 
     // Broadcast transaction
@@ -189,14 +210,16 @@ export default async () => {
       { waitForResponse: true, name: "txnSender" },
       async () => {
         try {
-          const provider = new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
+          const provider = new ethers.providers.JsonRpcProvider(
+            chainInfo.rpcUrl,
+          );
           const receipt = await provider.sendTransaction(signedTransferTx);
           return receipt.hash;
         } catch (error) {
           console.error("Error sending transfer:", error);
           throw error;
         }
-      }
+      },
     );
 
     if (!ethers.utils.isHexString(transferHash)) {

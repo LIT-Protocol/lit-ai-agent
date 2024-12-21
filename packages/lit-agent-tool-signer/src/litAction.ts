@@ -1,4 +1,11 @@
-//@ts-nocheck
+declare global {
+  const params: any;
+  const ethers: any;
+  const Lit: any;
+  const pkp: any;
+  const chainInfo: any;
+}
+
 export default async () => {
   try {
     // Check if we have the required parameters
@@ -10,7 +17,8 @@ export default async () => {
     const LIT_AGENT_REGISTRY_ABI = [
       "function getActionPolicy(address user, address pkp, string calldata ipfsCid) external view returns (bool isPermitted, bytes memory description, bytes memory policy)",
     ];
-    const LIT_AGENT_REGISTRY_ADDRESS = "0x728e8162603F35446D09961c4A285e2643f4FB91";
+    const LIT_AGENT_REGISTRY_ADDRESS =
+      "0x728e8162603F35446D09961c4A285e2643f4FB91";
 
     // Validate auth parameters
     if (!params.user) {
@@ -27,13 +35,13 @@ export default async () => {
     const registryContract = new ethers.Contract(
       LIT_AGENT_REGISTRY_ADDRESS,
       LIT_AGENT_REGISTRY_ABI,
-      new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl)
+      new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl),
     );
 
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
       params.user,
       pkp.ethAddress,
-      params.ipfsCid
+      params.ipfsCid,
     );
 
     if (!isPermitted) {
@@ -44,21 +52,24 @@ export default async () => {
     const policyStruct = ["tuple(bool allowAll)"];
     let decodedPolicy;
     try {
-      decodedPolicy = ethers.utils.defaultAbiCoder.decode(policyStruct, policy)[0];
-      
+      decodedPolicy = ethers.utils.defaultAbiCoder.decode(
+        policyStruct,
+        policy,
+      )[0];
+
       if (!decodedPolicy.allowAll) {
         throw new Error("Signing is not allowed by policy");
       }
     } catch (error) {
       throw new Error(
-        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
     // Sign the message
     const signature = await Lit.Actions.signEcdsa({
       toSign: ethers.utils.arrayify(
-        ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params.inputString))
+        ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params.inputString)),
       ),
       publicKey: pkp.publicKey,
       sigName: "sig",

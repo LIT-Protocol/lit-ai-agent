@@ -1,5 +1,9 @@
 import { Command } from "commander";
-import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
+import {
+  readNetworkFromStorage,
+  readCapacityTokenIdFromStorage,
+  readPkpFromStorage,
+} from "@lit-protocol/agent-signer";
 
 export function registerShowCommand(program: Command): void {
   program
@@ -12,7 +16,9 @@ export function registerShowCommand(program: Command): void {
         const pkp = readPkpFromStorage();
 
         if (!network || !pkp) {
-          console.log("No configuration found. Run 'lit-agent init' to set up.");
+          console.log(
+            "No configuration found. Run 'lit-agent init' to set up.",
+          );
           return;
         }
 
@@ -29,7 +35,7 @@ export function registerShowCommand(program: Command): void {
           command.error(`Error reading configuration: ${error.message}`);
         } else {
           command.error(
-            "An unknown error occurred while reading configuration"
+            "An unknown error occurred while reading configuration",
           );
         }
       }

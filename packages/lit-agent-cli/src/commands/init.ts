@@ -1,7 +1,11 @@
 import inquirer from "inquirer";
 import { Command } from "commander";
 import { LIT_NETWORK } from "@lit-protocol/constants";
-import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
+import {
+  readNetworkFromStorage,
+  readCapacityTokenIdFromStorage,
+  readPkpFromStorage,
+} from "@lit-protocol/agent-signer";
 
 import { initLitProtocol } from "../core/init";
 
@@ -100,10 +104,10 @@ export function registerInitCommand(program: Command): void {
         console.log("--------------------");
         console.log(`Network: ${config.network}`);
         console.log(
-          `Capacity Token ID: ${config.capacityTokenId || "Will be minted"}`
+          `Capacity Token ID: ${config.capacityTokenId || "Will be minted"}`,
         );
         console.log(
-          `PKP Public Key: ${config.pkp.publicKey || "Will be minted"}`
+          `PKP Public Key: ${config.pkp.publicKey || "Will be minted"}`,
         );
 
         const { confirm } = await inquirer.prompt<{ confirm: boolean }>([

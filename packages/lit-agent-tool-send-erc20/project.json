@@ -16,18 +16,15 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/lit-agent-tool-send-erc20/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/lit-agent-tool-send-erc20/jest.config.cjs"
+        "jestConfig": "packages/lit-agent-tool-send-erc20/jest.config.ts"
       }
     }
   },
-  "tags": []
+  "tags": ["tool"]
 }

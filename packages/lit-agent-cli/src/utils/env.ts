@@ -10,7 +10,7 @@ export function validateEnvVar(envName: string, command: Command): string {
   const value = process.env[envName];
   if (value === "" || value === undefined) {
     command.error(
-      `Missing ${envName} environment variable. Please set it in your .env file.`
+      `Missing ${envName} environment variable. Please set it in your .env file.`,
     );
   }
   return value as string;
