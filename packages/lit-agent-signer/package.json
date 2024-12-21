@@ -1,6 +1,6 @@
 {
   "name": "@lit-protocol/agent-signer",
-  "version": "0.5.0",
+  "version": "0.1.0",
   "description": "Makes signing transactions and messages with Lit Protocol easy",
   "type": "module",
   "main": "dist/index.js",

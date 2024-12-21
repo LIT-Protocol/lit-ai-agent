@@ -1,15 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "module": "ES2020",
+    "lib": ["ES2020"],
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "emitDeclarationOnly": true,
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "src/litAction.ts"]
+  "exclude": ["node_modules", "dist", "src/__tests__/**/*", "src/litAction.ts"]
 }

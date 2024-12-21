@@ -10,8 +10,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "rootDir": "src",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "examples"]
