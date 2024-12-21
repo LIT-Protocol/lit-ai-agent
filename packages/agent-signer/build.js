@@ -8,6 +8,17 @@ const buildOptions = {
   platform: 'node',
   mainFields: ['main', 'module'],
   target: ['es2020'],
+  outbase: 'src',
+  plugins: [
+    {
+      name: 'exclude-test-files',
+      setup(build) {
+        build.onResolve({ filter: /__tests__/ }, () => ({
+          external: true,
+        }));
+      },
+    },
+  ],
 };
 
 // Build CJS version
