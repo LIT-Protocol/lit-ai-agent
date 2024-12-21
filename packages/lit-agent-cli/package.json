@@ -20,7 +20,6 @@
     "lit-agent-signer": "*",
     "lit-agent-tool-send-erc20": "*",
     "lit-agent-tool-signer": "*",
-    "lit-agent-tool-uniswap": "*",
     "lit-agent-toolkit": "*",
     "openai": "^4.24.1"
   },
