@@ -24,6 +24,12 @@
       "options": {
         "jestConfig": "packages/lit-agent-tool-uniswap/jest.config.ts"
       }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf {projectRoot}/dist {projectRoot}/node_modules"
+      }
     }
   },
   "tags": ["tool"]

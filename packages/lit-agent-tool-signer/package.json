@@ -23,6 +23,8 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
     "esbuild": "^0.20.1",
     "typescript": "^5.0.0"
   }

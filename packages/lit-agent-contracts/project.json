@@ -17,6 +17,12 @@
         "command": "forge test",
         "cwd": "packages/lit-agent-contracts"
       }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "forge clean && rm -rf {projectRoot}/cache {projectRoot}/out {projectRoot}/node_modules"
+      }
     }
   },
   "tags": []

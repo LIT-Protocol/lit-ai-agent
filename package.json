@@ -12,7 +12,7 @@
     "lint:fix": "nx run-many --target=lint --all -- --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "clean": "nx run-many --target=clean --all",
+    "clean": "nx run-many --target=clean --all && rm -rf dist node_modules",
     "prepare": "husky install"
   },
   "workspaces": [

@@ -5,13 +5,32 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/lit-agent-tool-send-erc20",
-        "main": "packages/lit-agent-tool-send-erc20/src/index.ts",
-        "tsConfig": "packages/lit-agent-tool-send-erc20/tsconfig.json",
-        "assets": ["packages/lit-agent-tool-send-erc20/*.md"]
+        "commands": [
+          "tsc --project tsconfig.json",
+          "nx run lit-agent-tool-send-erc20:bundle"
+        ],
+        "cwd": "packages/lit-agent-tool-send-erc20",
+        "parallel": false
+      }
+    },
+    "bundle": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist",
+        "main": "src/index.ts",
+        "tsConfig": "tsconfig.json",
+        "assets": ["*.md"],
+        "format": ["esm"],
+        "bundle": true,
+        "minify": false,
+        "skipTypeCheck": true,
+        "platform": "node",
+        "external": ["node:*"],
+        "outputFileExtensionForESM": ".js"
       }
     },
     "lint": {
@@ -23,6 +42,12 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/lit-agent-tool-send-erc20/jest.config.ts"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf {projectRoot}/dist {projectRoot}/node_modules"
       }
     }
   },
