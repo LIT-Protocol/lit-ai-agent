@@ -2552,6 +2552,18 @@
     tslib "^2.3.0"
     yargs-parser "21.1.1"
 
+"@nx/esbuild@^20.3.0":
+  version "20.3.0"
+  resolved "https://registry.yarnpkg.com/@nx/esbuild/-/esbuild-20.3.0.tgz#eb2eff6e51d9d030b399e8a5d7105e7d30ec47db"
+  integrity sha512-5uDp1m9YrXh/qL0fHrm7x+k58+FtsyBIzNGVJuzFiwkXPwOwcrKIcn/Dslg9n+WfFJWt8CK5MB0cE7mA/zwIjg==
+  dependencies:
+    "@nx/devkit" "20.3.0"
+    "@nx/js" "20.3.0"
+    fast-glob "3.2.7"
+    picocolors "^1.1.0"
+    tsconfig-paths "^4.1.2"
+    tslib "^2.3.0"
+
 "@nx/eslint-plugin@^20.3.0":
   version "20.3.0"
   resolved "https://registry.yarnpkg.com/@nx/eslint-plugin/-/eslint-plugin-20.3.0.tgz#14b9d9631b3677d3c14998a193f003affdf1b842"
@@ -5439,6 +5451,17 @@ fast-diff@^1.1.2:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.3.0.tgz#ece407fa550a64d638536cd727e129c61616e0f0"
   integrity sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==
+
+fast-glob@3.2.7:
+  version "3.2.7"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.7.tgz#fd6cb7a2d7e9aa7a7846111e85a196d6b2f766a1"
+  integrity sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
 
 fast-glob@^3.2.9, fast-glob@^3.3.2:
   version "3.3.2"
