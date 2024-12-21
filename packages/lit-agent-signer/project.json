@@ -5,13 +5,18 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/lit-agent-signer",
         "main": "packages/lit-agent-signer/src/index.ts",
         "tsConfig": "packages/lit-agent-signer/tsconfig.json",
-        "assets": ["packages/lit-agent-signer/*.md"]
+        "assets": ["packages/lit-agent-signer/*.md"],
+        "format": ["esm"],
+        "bundle": true,
+        "minify": false,
+        "skipTypeCheck": false,
+        "platform": "node"
       }
     },
     "lint": {

@@ -2,8 +2,9 @@
   "name": "@lit-protocol/agent-cli",
   "version": "0.1.0",
   "type": "module",
+  "license": "MIT",
   "bin": {
-    "@lit-protocol/agent": "./dist/cli.js"
+    "lit-agent": "./dist/cli.js"
   },
   "scripts": {
     "start": "dotenvx run -- tsx src/cli.ts",
