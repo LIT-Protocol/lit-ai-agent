@@ -1,0 +1,23 @@
+{
+  "name": "lit-agent-contracts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lit-agent-contracts",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "forge build",
+        "cwd": "packages/lit-agent-contracts"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "forge test",
+        "cwd": "packages/lit-agent-contracts"
+      }
+    }
+  },
+  "tags": []
+}

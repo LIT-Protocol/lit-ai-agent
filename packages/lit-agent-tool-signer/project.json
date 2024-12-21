@@ -1,0 +1,33 @@
+{
+  "name": "lit-agent-tool-signer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lit-agent-tool-signer/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/lit-agent-tool-signer",
+        "main": "packages/lit-agent-tool-signer/src/index.ts",
+        "tsConfig": "packages/lit-agent-tool-signer/tsconfig.json",
+        "assets": ["packages/lit-agent-tool-signer/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/lit-agent-tool-signer/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/lit-agent-tool-signer/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
