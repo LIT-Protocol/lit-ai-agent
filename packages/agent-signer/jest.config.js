@@ -1,11 +1,21 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts'],
-  moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+        isolatedModules: true,
+      },
+    ],
   },
-  testTimeout: 30000,
-  setupFiles: ['./src/__tests__/setupTests.ts'],
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.json',
+      isolatedModules: true,
+    },
+  },
 };

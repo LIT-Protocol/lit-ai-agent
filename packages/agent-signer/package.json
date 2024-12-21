@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "node build.js",
-    "test": "jest --runInBand --silent=false",
+    "test": "dotenvx run -- jest --runInBand --silent=false",
     "lint": "eslint src",
     "format": "prettier --write src/**/*.ts",
     "example": "npx tsx examples/basic-usage.ts",
@@ -43,6 +43,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.31.3",
     "@lit-protocol/auth-helpers": "^7",
     "@lit-protocol/contracts-sdk": "^7",
     "@lit-protocol/lit-node-client-nodejs": "^7",
