@@ -91,7 +91,7 @@ export async function processAgentRequest(
   if (analysis.recipientAddress)
     console.log(`- Recipient: ${analysis.recipientAddress}`);
 
-  const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+  const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
     litNetwork: readNetworkFromStorage()!,
   });
   try {

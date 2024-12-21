@@ -4,6 +4,7 @@ import inquirer from "inquirer";
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
 import { setActionPolicy } from "../../core/pkp/setActionPolicy";
 import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { validateEnvVar } from "../../utils/env";
 
 async function promptForPolicy(
   tool: LitAgentTool
@@ -120,7 +121,7 @@ export function registerAddToolCommand(program: Command): void {
         // Prompt for policy configuration if the tool has a policy schema
         const encodedPolicy = await promptForPolicy(selectedTool);
 
-        const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+        const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
           litNetwork: readNetworkFromStorage()!,
         });
 

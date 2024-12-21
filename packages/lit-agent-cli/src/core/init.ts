@@ -25,7 +25,7 @@ export const initLitProtocol = async (command: Command, config: InitConfig) => {
       new ethers.providers.JsonRpcProvider(chainToSubmitTxnOnRpcUrl)
     );
 
-    const litClient = await LitClient.create("0x" + process.env.ETHEREUM_PRIVATE_KEY!, {
+    const litClient = await LitClient.create("0x" + validateEnvVar("ETHEREUM_PRIVATE_KEY", command), {
       litNetwork: config.network,
     });
 
