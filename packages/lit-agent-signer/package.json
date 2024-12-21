@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@lit-protocol/auth-helpers": "^7",
+    "@lit-protocol/constants": "^7.0.2",
     "@lit-protocol/contracts-sdk": "^7",
     "@lit-protocol/lit-node-client-nodejs": "^7",
     "ethers": "^5.7.2",
