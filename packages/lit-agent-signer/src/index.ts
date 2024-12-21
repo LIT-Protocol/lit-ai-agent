@@ -13,7 +13,12 @@ import {
   MintWithAuthResponse,
   SigResponse,
 } from '@lit-protocol/types';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { LocalStorage } from 'node-localstorage';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import {
   getSessionSigs,
@@ -22,7 +27,7 @@ import {
   readNetworkFromStorage,
 } from './utils';
 
-const storage = new LocalStorage('./lit-session-storage');
+const storage = new LocalStorage(join(__dirname, '../lit-session-storage'));
 Object.assign(global, { localStorage: storage });
 export const localStorage = storage;
 
