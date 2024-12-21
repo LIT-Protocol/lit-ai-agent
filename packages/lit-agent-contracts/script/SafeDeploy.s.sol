@@ -24,25 +24,22 @@ contract SafeDeployScript is Script {
         owners[0] = msg.sender;
         bytes memory initializer = abi.encodeWithSelector(
             Safe.setup.selector,
-            owners,              // owners
-            1,                   // threshold
-            address(0),          // to
-            bytes(""),           // data
-            address(0),          // fallbackHandler
-            address(0),          // paymentToken
-            0,                   // payment
-            address(0)           // paymentReceiver
+            owners, // owners
+            1, // threshold
+            address(0), // to
+            bytes(""), // data
+            address(0), // fallbackHandler
+            address(0), // paymentToken
+            0, // payment
+            address(0) // paymentReceiver
         );
-        
-        address proxyAddress = address(safeProxyFactory.createProxyWithNonce(
-            address(safeSingleton),
-            initializer,
-            block.timestamp
-        ));
+
+        address proxyAddress =
+            address(safeProxyFactory.createProxyWithNonce(address(safeSingleton), initializer, block.timestamp));
 
         vm.stopBroadcast();
 
         console.log("Safe deployed at:", proxyAddress);
         return proxyAddress;
     }
-} 
+}

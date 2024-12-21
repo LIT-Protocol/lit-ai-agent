@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "forge build",
-    "deploy": "forge script"
+    "deploy": "forge script",
+    "format": "forge fmt"
   }
 }

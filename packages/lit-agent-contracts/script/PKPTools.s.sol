@@ -12,7 +12,7 @@ contract PKPToolsScript is Script {
 
     function run() public {
         address safeAddress = vm.envOr("SAFE_ADDRESS", address(0));
-        
+
         // If SAFE_ADDRESS is not set, deploy a new Safe
         if (safeAddress == address(0)) {
             console.log("No SAFE_ADDRESS provided, deploying new Safe...");
