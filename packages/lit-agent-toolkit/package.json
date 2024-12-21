@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
+  "scripts": {
+    "test": "exit 0"
+  },
   "dependencies": {
     "@lit-protocol/auth-helpers": "^7.0.2",
     "@lit-protocol/constants": "^7.0.2",
