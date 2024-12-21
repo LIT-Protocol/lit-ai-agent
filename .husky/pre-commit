@@ -1,0 +1,1 @@
+#!/usr/bin/env sh\n. "$(dirname -- "$0")/_/husky.sh"\n\nyarn lint-staged

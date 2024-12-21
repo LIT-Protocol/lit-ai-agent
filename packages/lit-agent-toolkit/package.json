@@ -1,8 +1,9 @@
 {
-  "name": "lit-agent-toolkit",
+  "name": "@lit-protocol/agent-toolkit",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
+  "scripts": {},
   "dependencies": {
     "@lit-protocol/auth-helpers": "^7.0.2",
     "@lit-protocol/constants": "^7.0.2",

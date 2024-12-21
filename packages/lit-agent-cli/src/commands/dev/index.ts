@@ -15,19 +15,19 @@ export function registerDevCommands(program: Command): void {
       try {
         const ethereumPrivateKey = validateEnvVar(
           "ETHEREUM_PRIVATE_KEY",
-          command
+          command,
         );
 
         // Connect to local Anvil node
         const provider = new ethers.providers.JsonRpcProvider(
-          "http://localhost:8545"
+          "http://localhost:8545",
         );
 
         // Get the first Anvil account (which has test ETH)
         const anvilWallet = new ethers.Wallet(
           // This is the private key of the first Anvil test account
           "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
-          provider
+          provider,
         );
 
         // Get the Lit wallet address from the private key
@@ -35,7 +35,7 @@ export function registerDevCommands(program: Command): void {
         const litWalletAddress = litWallet.address;
 
         console.log(
-          `Funding Lit wallet (${litWalletAddress}) from Anvil wallet (${anvilWallet.address})...`
+          `Funding Lit wallet (${litWalletAddress}) from Anvil wallet (${anvilWallet.address})...`,
         );
 
         // Convert amount from ETH to wei
@@ -59,7 +59,7 @@ export function registerDevCommands(program: Command): void {
         // Get new balance
         const newBalance = await provider.getBalance(litWalletAddress);
         console.log(
-          `New wallet balance: ${ethers.utils.formatEther(newBalance)} ETH`
+          `New wallet balance: ${ethers.utils.formatEther(newBalance)} ETH`,
         );
       } catch (error) {
         if (error instanceof Error) {

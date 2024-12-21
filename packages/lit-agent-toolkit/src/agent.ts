@@ -8,12 +8,12 @@ export async function analyzeUserIntentAndMatchAction(
   userIntent: string,
   litAgentRegistryContract: ethers.Contract,
   userEthAddress: string,
-  pkpEthAddress: string
+  pkpEthAddress: string,
 ) {
   const permittedActions = await getPermittedActions(
     litAgentRegistryContract,
     userEthAddress,
-    pkpEthAddress
+    pkpEthAddress,
   );
 
   const completion = await openai.chat.completions.create({
@@ -26,7 +26,7 @@ export async function analyzeUserIntentAndMatchAction(
           Available actions:
           ${permittedActions
             .map(
-              (action) => `- CID: ${action.ipfsCid}\n  ${action.description}`
+              (action) => `- CID: ${action.ipfsCid}\n  ${action.description}`,
             )
             .join("\n")}
 
@@ -59,7 +59,7 @@ export async function analyzeUserIntentAndMatchAction(
 
   const matchedAction = analysis.recommendedCID
     ? permittedActions.find(
-        (action) => action.ipfsCid === analysis.recommendedCID
+        (action) => action.ipfsCid === analysis.recommendedCID,
       )
     : null;
 

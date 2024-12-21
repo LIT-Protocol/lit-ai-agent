@@ -20,7 +20,7 @@ async function getDescription() {
 
   const code = result.outputFiles[0].text;
   const match = code.match(
-    /const signerLitActionDescription\s*=\s*["']([^"']+)["']/
+    /const signerLitActionDescription\s*=\s*["']([^"']+)["']/,
   );
 
   if (!match) {
@@ -73,7 +73,7 @@ async function getExistingMetadata() {
   try {
     const content = await fs.readFile(
       join(rootDir, "dist", "ipfs.json"),
-      "utf-8"
+      "utf-8",
     );
     const metadata = JSON.parse(content);
     return metadata.signerLitAction || {};

@@ -9,7 +9,7 @@ const program = new Command();
 
 // Basic program information
 program
-  .name("lit-agent")
+  .name("@lit-protocol/agent")
   .description("CLI tool for Lit Protocol agent operations")
   .version("0.1.0");
 

@@ -1,4 +1,11 @@
-//@ts-nocheck
+declare global {
+  const params: any;
+  const ethers: any;
+  const Lit: any;
+  const pkp: any;
+  const chainInfo: any;
+}
+
 export default async () => {
   try {
     // Check if we have the required parameters
@@ -10,7 +17,8 @@ export default async () => {
     const LIT_AGENT_REGISTRY_ABI = [
       "function getActionPolicy(address user, address pkp, string calldata ipfsCid) external view returns (bool isPermitted, bytes memory description, bytes memory policy)",
     ];
-    const LIT_AGENT_REGISTRY_ADDRESS = "0x728e8162603F35446D09961c4A285e2643f4FB91";
+    const LIT_AGENT_REGISTRY_ADDRESS =
+      "0x728e8162603F35446D09961c4A285e2643f4FB91";
 
     // Validate auth parameters
     if (!params.user) {
@@ -44,8 +52,11 @@ export default async () => {
     const policyStruct = ["tuple(bool allowAll)"];
     let decodedPolicy;
     try {
-      decodedPolicy = ethers.utils.defaultAbiCoder.decode(policyStruct, policy)[0];
-      
+      decodedPolicy = ethers.utils.defaultAbiCoder.decode(
+        policyStruct,
+        policy
+      )[0];
+
       if (!decodedPolicy.allowAll) {
         throw new Error("Signing is not allowed by policy");
       }
@@ -74,7 +85,7 @@ export default async () => {
     Lit.Actions.setResponse({
       response: JSON.stringify({
         status: "error",
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }),
     });
   }

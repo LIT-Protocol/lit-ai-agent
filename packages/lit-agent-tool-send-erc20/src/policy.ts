@@ -67,8 +67,8 @@ export function encodeSendERC20Policy(policy: SendERC20Policy): string {
 
   // Handle comma-separated strings for arrays
   const processAddresses = (addresses: string[] | string): string[] => {
-    if (typeof addresses === 'string') {
-      return addresses.split(',').map(addr => addr.trim());
+    if (typeof addresses === "string") {
+      return addresses.split(",").map((addr) => addr.trim());
     }
     return addresses;
   };
@@ -89,12 +89,16 @@ export function encodeSendERC20Policy(policy: SendERC20Policy): string {
   }
 
   return ethers.utils.defaultAbiCoder.encode(
-    ["tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)"],
-    [{
-      maxAmount: policy.maxAmount,
-      allowedTokens,
-      allowedRecipients,
-    }]
+    [
+      "tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)",
+    ],
+    [
+      {
+        maxAmount: policy.maxAmount,
+        allowedTokens,
+        allowedRecipients,
+      },
+    ],
   );
 }
 
@@ -103,8 +107,10 @@ export function encodeSendERC20Policy(policy: SendERC20Policy): string {
  */
 export function decodeSendERC20Policy(encodedPolicy: string): SendERC20Policy {
   const decoded = ethers.utils.defaultAbiCoder.decode(
-    ["tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)"],
-    encodedPolicy
+    [
+      "tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)",
+    ],
+    encodedPolicy,
   )[0];
 
   return {

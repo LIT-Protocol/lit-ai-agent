@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "rootDir": "src",
+    "typeRoots": [
+      "../../node_modules/@types",
+      "./node_modules/@types",
+      "./src/types"
+    ]
+  },
+  "references": [{ "path": "../lit-agent-toolkit" }],
+  "include": ["src/**/*.ts", "src/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "examples"]
+}
