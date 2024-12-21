@@ -1,0 +1,29 @@
+{
+  "name": "@lit-protocol/agent-tool-send-erc20",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && node scripts/build.js",
+    "deploy": "yarn build && node scripts/deploy.js"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.31.0",
+    "ethers": "v5",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.1",
+    "typescript": "^5.0.0"
+  }
+}
