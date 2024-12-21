@@ -1,9 +1,9 @@
 {
-  "name": "lit-agent-cli",
+  "name": "@lit-protocol/agent-cli",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "lit-agent": "./dist/cli.js"
+    "@lit-protocol/agent": "./dist/cli.js"
   },
   "scripts": {
     "start": "dotenvx run -- tsx src/cli.ts",
@@ -17,10 +17,10 @@
     "commander": "^12.1.0",
     "ethers": "v5",
     "inquirer": "^9.2.15",
-    "lit-agent-signer": "*",
-    "lit-agent-tool-send-erc20": "*",
-    "lit-agent-tool-signer": "*",
-    "lit-agent-toolkit": "*",
+    "@lit-protocol/agent-signer": "*",
+    "@lit-protocol/agent-tool-send-erc20": "*",
+    "@lit-protocol/agent-tool-signer": "*",
+    "@lit-protocol/agent-toolkit": "*",
     "openai": "^4.24.1"
   },
   "devDependencies": {

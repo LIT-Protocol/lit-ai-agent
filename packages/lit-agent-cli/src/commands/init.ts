@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import { Command } from "commander";
 import { LIT_NETWORK } from "@lit-protocol/constants";
-import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
 
 import { initLitProtocol } from "../core/init";
 

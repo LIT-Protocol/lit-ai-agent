@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import type { Command } from "commander";
 
 import { validateEnvVar } from "../utils/env";
-import { LitClient } from "lit-agent-signer";
+import { LitClient } from "@lit-protocol/agent-signer";
 import type { InitConfig } from "../commands/init";
 
 const LIT_AGENT_REGISTRY_ABI = ["function registerPKP(address pkp) external"];

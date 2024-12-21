@@ -1,5 +1,5 @@
 {
-  "name": "lit-agent-tool-send-erc20",
+  "name": "@lit-protocol/agent-tool-send-erc20",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",

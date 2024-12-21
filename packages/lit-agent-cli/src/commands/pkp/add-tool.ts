@@ -3,7 +3,7 @@ import inquirer from "inquirer";
 
 import { getAvailableTools, LitAgentTool } from "../../utils/tools";
 import { setActionPolicy } from "../../core/pkp/setActionPolicy";
-import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { LitClient, readNetworkFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
 import { validateEnvVar } from "../../utils/env";
 
 async function promptForPolicy(

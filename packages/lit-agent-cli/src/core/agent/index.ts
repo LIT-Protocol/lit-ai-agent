@@ -2,12 +2,12 @@ import { OpenAI } from "openai";
 import { ethers } from "ethers";
 import {
   analyzeUserIntentAndMatchAction
-} from "lit-agent-toolkit";
+} from "@lit-protocol/agent-toolkit";
 import { Command } from "commander";
 
 import { validateEnvVar } from "../../utils/env";
 
-import { readPkpFromStorage, readNetworkFromStorage, LitClient } from "lit-agent-signer";
+import { readPkpFromStorage, readNetworkFromStorage, LitClient } from "@lit-protocol/agent-signer";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",

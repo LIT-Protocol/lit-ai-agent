@@ -29,9 +29,9 @@ export function registerRemoveCommand(program: Command): void {
         const storagePath = path.resolve('../lit-session-storage');
         if (fs.existsSync(storagePath)) {
           fs.rmSync(storagePath, { recursive: true, force: true });
-          console.log("lit-session-storage removed successfully");
+          console.log("@lit-protocol/session-storage removed successfully");
         } else {
-          console.log("lit-session-storage not found");
+          console.log("@lit-protocol/session-storage not found");
         }
       } catch (error) {
         if (error instanceof Error) {

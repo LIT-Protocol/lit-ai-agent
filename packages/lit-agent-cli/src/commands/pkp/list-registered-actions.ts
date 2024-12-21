@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { ethers } from "ethers";
 import { getAvailableTools } from "../../utils/tools";
 import { validateEnvVar } from "../../utils/env";
-import { readPkpFromStorage } from "lit-agent-signer";
+import { readPkpFromStorage } from "@lit-protocol/agent-signer";
 
 const LIT_AGENT_REGISTRY_ABI = [
   "function getRegisteredActions(address user, address pkp) external view returns (string[] memory ipfsCids, bytes[] memory descriptions, bytes[] memory policies)",

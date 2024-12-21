@@ -1,5 +1,5 @@
 {
-  "name": "lit-agent-tool-signer",
+  "name": "@lit-protocol/agent-tool-signer",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",

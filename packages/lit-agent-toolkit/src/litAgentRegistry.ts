@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { decodeSendERC20Policy } from "lit-agent-tool-send-erc20";
+import { decodeSendERC20Policy } from "@lit-protocol/agent-tool-send-erc20";
 
 export type LitAction = {
   ipfsCid: string;

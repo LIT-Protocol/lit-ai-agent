@@ -1,5 +1,5 @@
 {
-  "name": "lit-agent-toolkit",
+  "name": "@lit-protocol/agent-toolkit",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",

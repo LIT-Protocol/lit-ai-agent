@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "lit-agent-signer";
+import { readNetworkFromStorage, readCapacityTokenIdFromStorage, readPkpFromStorage } from "@lit-protocol/agent-signer";
 
 export function registerShowCommand(program: Command): void {
   program
