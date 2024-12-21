@@ -30,16 +30,19 @@ jobs:
           forge --version
 
       - name: Run Forge fmt
+        working-directory: packages/lit-agent-contracts
         run: |
           forge fmt --check
         id: fmt
 
       - name: Run Forge build
+        working-directory: packages/lit-agent-contracts
         run: |
           forge build --sizes
         id: build
 
       - name: Run Forge tests
+        working-directory: packages/lit-agent-contracts
         run: |
           forge test -vvv
         id: test
