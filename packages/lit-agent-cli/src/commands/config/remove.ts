@@ -1,12 +1,12 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
-
-import { ConfigManager } from "../../utils/config";
+import fs from 'fs';
+import path from 'path';
 
 export function registerRemoveCommand(program: Command): void {
   program
     .command("remove")
-    .description("Remove the configuration file")
+    .description("Remove the lit-session-storage directory")
     .option("-f, --force", "Skip confirmation prompt", false)
     .action(async (options, command) => {
       try {
@@ -15,7 +15,7 @@ export function registerRemoveCommand(program: Command): void {
             {
               type: "confirm",
               name: "confirm",
-              message: "Are you sure you want to remove the configuration?",
+              message: "Are you sure you want to remove lit-session-storage?",
               default: false,
             },
           ]);
@@ -26,14 +26,19 @@ export function registerRemoveCommand(program: Command): void {
           }
         }
 
-        ConfigManager.clearConfig();
-        console.log("Configuration removed successfully");
+        const storagePath = path.resolve('../lit-session-storage');
+        if (fs.existsSync(storagePath)) {
+          fs.rmSync(storagePath, { recursive: true, force: true });
+          console.log("lit-session-storage removed successfully");
+        } else {
+          console.log("lit-session-storage not found");
+        }
       } catch (error) {
         if (error instanceof Error) {
-          command.error(`Error removing configuration: ${error.message}`);
+          command.error(`Error removing lit-session-storage: ${error.message}`);
         } else {
           command.error(
-            "An unknown error occurred while removing configuration"
+            "An unknown error occurred while removing lit-session-storage"
           );
         }
       }
