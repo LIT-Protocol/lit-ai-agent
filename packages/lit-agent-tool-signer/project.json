@@ -6,31 +6,10 @@
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{projectRoot}/dist"],
       "options": {
-        "commands": [
-          "tsc --project tsconfig.json",
-          "nx run lit-agent-tool-signer:bundle"
-        ],
-        "cwd": "packages/lit-agent-tool-signer",
-        "parallel": false
-      }
-    },
-    "bundle": {
-      "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist",
-        "main": "src/index.ts",
-        "tsConfig": "tsconfig.json",
-        "assets": ["*.md"],
-        "format": ["esm"],
-        "bundle": true,
-        "minify": false,
-        "skipTypeCheck": true,
-        "platform": "node",
-        "external": ["node:*"],
-        "outputFileExtensionForESM": ".js"
+        "command": "tsup \"src/**/*.ts\" --format esm --dts --sourcemap --clean --treeshake --external ethers --no-splitting",
+        "cwd": "packages/lit-agent-tool-signer"
       }
     },
     "lint": {
@@ -47,7 +26,8 @@
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf {projectRoot}/dist {projectRoot}/node_modules"
+        "command": "rm -rf dist node_modules",
+        "cwd": "packages/lit-agent-tool-signer"
       }
     }
   },

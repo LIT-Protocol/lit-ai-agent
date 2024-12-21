@@ -1,11 +1,16 @@
 declare global {
+  const ethers: any;
+  const chainInfo: any;
+  const pkp: any;
+  const params: any;
   const LitAuth: any;
+  const Lit: any;
 }
 
 export default async () => {
   try {
     const ethersProvider = new ethers.providers.JsonRpcProvider(
-      chainInfo.rpcUrl,
+      chainInfo.rpcUrl
     );
 
     // Policy Checks
@@ -30,13 +35,13 @@ export default async () => {
     const registryContract = new ethers.Contract(
       LIT_AGENT_REGISTRY_ADDRESS,
       LIT_AGENT_REGISTRY_ABI,
-      ethersProvider,
+      ethersProvider
     );
 
     const [isPermitted, , policy] = await registryContract.getActionPolicy(
       LitAuth.authSigAddress,
       pkp.ethAddress,
-      LitAuth.actionIpfsIds[0],
+      LitAuth.actionIpfsIds[0]
     );
 
     if (!isPermitted) {
@@ -51,7 +56,7 @@ export default async () => {
     try {
       decodedPolicy = ethers.utils.defaultAbiCoder.decode(
         policyStruct,
-        policy,
+        policy
       )[0];
       if (
         !decodedPolicy.maxAmount ||
@@ -61,22 +66,22 @@ export default async () => {
         throw new Error("Invalid policy format: missing required fields");
       }
 
-      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map((token) =>
-        ethers.utils.getAddress(token),
+      decodedPolicy.allowedTokens = decodedPolicy.allowedTokens.map(
+        (token: string) => ethers.utils.getAddress(token)
       );
       decodedPolicy.allowedRecipients = decodedPolicy.allowedRecipients.map(
-        (recipient) => ethers.utils.getAddress(recipient),
+        (recipient: string) => ethers.utils.getAddress(recipient)
       );
     } catch (error) {
       throw new Error(
-        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to decode policy: ${error instanceof Error ? error.message : String(error)}`
       );
     }
 
     // Validate token and recipient against policy
     const normalizedTokenAddress = ethers.utils.getAddress(params.tokenIn);
     const normalizedRecipientAddress = ethers.utils.getAddress(
-      params.recipientAddress,
+      params.recipientAddress
     );
 
     if (!decodedPolicy.allowedTokens.includes(normalizedTokenAddress)) {
@@ -97,7 +102,7 @@ export default async () => {
     const tokenContract = new ethers.Contract(
       params.tokenIn,
       tokenInterface,
-      ethersProvider,
+      ethersProvider
     );
 
     // Get token info
@@ -111,7 +116,7 @@ export default async () => {
     // Check amount against policy maxAmount
     if (amount.gt(decodedPolicy.maxAmount)) {
       throw new Error(
-        `Amount exceeds policy limit. Max allowed: ${ethers.utils.formatUnits(decodedPolicy.maxAmount, decimals)}`,
+        `Amount exceeds policy limit. Max allowed: ${ethers.utils.formatUnits(decodedPolicy.maxAmount, decimals)}`
       );
     }
 
@@ -119,7 +124,7 @@ export default async () => {
     if (amount.gt(balance)) {
       throw new Error(
         `Insufficient balance. PKP balance: ${ethers.utils.formatUnits(balance, decimals)}. ` +
-          `Required: ${ethers.utils.formatUnits(amount, decimals)}`,
+          `Required: ${ethers.utils.formatUnits(amount, decimals)}`
       );
     }
 
@@ -144,7 +149,7 @@ export default async () => {
           maxPriorityFeePerGas: priorityFee.toHexString(),
           nonce,
         });
-      },
+      }
     );
 
     const parsedGasData = JSON.parse(gasData);
@@ -156,7 +161,7 @@ export default async () => {
       estimatedGasLimit = await tokenContract.estimateGas.transfer(
         params.recipientAddress,
         amount,
-        { from: pkp.ethAddress },
+        { from: pkp.ethAddress }
       );
       console.log("Estimated gas limit:", estimatedGasLimit.toString());
       // Add 20% buffer
@@ -164,7 +169,7 @@ export default async () => {
     } catch (error) {
       console.error(
         "Could not estimate gas. Using fallback gas limit of 100000.",
-        error,
+        error
       );
       estimatedGasLimit = ethers.BigNumber.from("100000");
     }
@@ -189,7 +194,7 @@ export default async () => {
     console.log("Signing transfer...");
     const transferSig = await Lit.Actions.signAndCombineEcdsa({
       toSign: ethers.utils.arrayify(
-        ethers.utils.keccak256(ethers.utils.serializeTransaction(transferTx)),
+        ethers.utils.keccak256(ethers.utils.serializeTransaction(transferTx))
       ),
       publicKey: pkp.publicKey,
       sigName: "erc20TransferSig",
@@ -201,7 +206,7 @@ export default async () => {
         r: "0x" + JSON.parse(transferSig).r.substring(2),
         s: "0x" + JSON.parse(transferSig).s,
         v: JSON.parse(transferSig).v,
-      }),
+      })
     );
 
     // Broadcast transaction
@@ -211,7 +216,7 @@ export default async () => {
       async () => {
         try {
           const provider = new ethers.providers.JsonRpcProvider(
-            chainInfo.rpcUrl,
+            chainInfo.rpcUrl
           );
           const receipt = await provider.sendTransaction(signedTransferTx);
           return receipt.hash;
@@ -219,7 +224,7 @@ export default async () => {
           console.error("Error sending transfer:", error);
           throw error;
         }
-      },
+      }
     );
 
     if (!ethers.utils.isHexString(transferHash)) {
@@ -237,7 +242,7 @@ export default async () => {
     Lit.Actions.setResponse({
       response: JSON.stringify({
         status: "error",
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }),
     });
   }
