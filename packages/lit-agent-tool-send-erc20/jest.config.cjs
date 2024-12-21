@@ -1,0 +1,1 @@
+/** @type {import('@jest/types').Config.InitialOptions} */ module.exports = { preset: 'ts-jest', testEnvironment: 'node', transform: { '^.+\.ts$': ['ts-jest', { tsconfig: require('path').resolve(__dirname, 'tsconfig.test.json') }] }, moduleFileExtensions: ['ts', 'js', 'json'], testMatch: ['**/__tests__/**/*.test.ts'], displayName: 'lit-agent-tool-send-erc20', rootDir: '.' };

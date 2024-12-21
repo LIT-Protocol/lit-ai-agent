@@ -15,8 +15,7 @@
   },
   "scripts": {
     "build": "tsc && node scripts/build.js",
-    "deploy": "yarn build && node scripts/deploy.js",
-    "test": "exit 0"
+    "deploy": "yarn build && node scripts/deploy.js"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.31.0",
