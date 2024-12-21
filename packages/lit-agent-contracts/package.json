@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "exit 0",
     "build": "forge build",
     "deploy": "forge script"
   }

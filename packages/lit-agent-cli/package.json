@@ -8,8 +8,7 @@
   "scripts": {
     "start": "dotenvx run -- tsx src/cli.ts",
     "build": "tsc",
-    "dev": "tsx watch src/cli.ts",
-    "test": "exit 0"
+    "dev": "tsx watch src/cli.ts"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.31.0",
