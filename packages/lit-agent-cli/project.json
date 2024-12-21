@@ -1,0 +1,33 @@
+{
+  "name": "lit-agent-cli",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lit-agent-cli/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/lit-agent-cli",
+        "main": "packages/lit-agent-cli/src/index.ts",
+        "tsConfig": "packages/lit-agent-cli/tsconfig.json",
+        "assets": ["packages/lit-agent-cli/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/lit-agent-cli/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/lit-agent-cli/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
