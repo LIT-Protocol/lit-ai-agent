@@ -1,13 +1,4 @@
 import {
-  uniswapMetadata,
-  uniswapLitActionDescription,
-  SwapPolicy,
-  swapPolicySchema,
-  encodeSwapPolicy,
-  decodeSwapPolicy,
-} from "lit-agent-tool-uniswap";
-
-import {
   sendERC20Metadata,
   sendERC20LitActionDescription,
   SendERC20Policy,
@@ -37,15 +28,6 @@ export interface LitAgentTool {
 
 export const getAvailableTools = (): LitAgentTool[] => {
   return [
-    {
-      name: "Uniswap",
-      description: uniswapLitActionDescription,
-      ipfsId: uniswapMetadata.uniswapLitAction.IpfsHash,
-      package: "lit-agent-tool-uniswap",
-      policySchema: swapPolicySchema,
-      encodePolicyFn: encodeSwapPolicy,
-      decodePolicyFn: decodeSwapPolicy,
-    },
     {
       name: "SendERC20",
       description: sendERC20LitActionDescription,
