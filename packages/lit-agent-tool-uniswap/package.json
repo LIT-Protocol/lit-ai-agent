@@ -1,5 +1,5 @@
 {
-  "name": "lit-agent-tool-uniswap",
+  "name": "@lit-protocol/agent-tool-uniswap",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
