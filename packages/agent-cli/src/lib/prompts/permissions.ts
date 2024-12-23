@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import type { ToolInfo } from '@lit-protocol/agent-tool-registry';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export async function promptForToolPermission(
   tool: ToolInfo
@@ -14,7 +14,7 @@ export async function promptForToolPermission(
     logger.log(`  - ${param.name}: ${param.description}`);
   });
 
-  const { shouldPermit } = await inquirer.prompt([
+  const response = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'shouldPermit',
@@ -23,5 +23,5 @@ export async function promptForToolPermission(
     },
   ]);
 
-  return shouldPermit;
+  return response.shouldPermit;
 }

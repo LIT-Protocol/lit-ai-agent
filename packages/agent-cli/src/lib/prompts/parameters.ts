@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import type { ToolInfo } from '@lit-protocol/agent-tool-registry';
-import { logger } from '../utils/logger';
-import { promptForChainConfig } from './config';
+import { logger } from '../utils/logger.js';
+import { promptForChainConfig } from './config.js';
 
 interface ToolParameters {
   foundParams: Record<string, string>;
@@ -36,7 +36,7 @@ export async function collectMissingParams(
           throw new Error(`Unknown parameter: ${paramName}`);
         }
 
-        const { value } = await inquirer.prompt([
+        const response = await inquirer.prompt([
           {
             type: 'input',
             name: 'value',
@@ -50,7 +50,7 @@ export async function collectMissingParams(
           },
         ]);
 
-        allParams[paramName] = value.trim();
+        allParams[paramName] = response.value.trim();
       }
     }
 
@@ -60,7 +60,7 @@ export async function collectMissingParams(
       logger.log(`  ${key}: ${value}`);
     });
 
-    const { confirmed } = await inquirer.prompt([
+    const response = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'confirmed',
@@ -69,7 +69,7 @@ export async function collectMissingParams(
       },
     ]);
 
-    if (confirmed) {
+    if (response.confirmed) {
       // If chainConfig was collected, include it in the special chainInfo field
       if (chainConfig) {
         return {

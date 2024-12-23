@@ -1,10 +1,10 @@
 import inquirer from 'inquirer';
 import { ethers } from 'ethers';
-import { storage } from './utils/storage';
-import { logger } from './utils/logger';
+import { storage } from './utils/storage.js';
+import { logger } from './utils/logger.js';
 
 async function promptForPrivateKey(): Promise<string> {
-  const { privateKey } = await inquirer.prompt<{ privateKey: string }>([
+  const response = await inquirer.prompt([
     {
       type: 'password',
       name: 'privateKey',
@@ -22,11 +22,11 @@ async function promptForPrivateKey(): Promise<string> {
       },
     },
   ]);
-  return privateKey;
+  return response.privateKey;
 }
 
 async function promptForWalletChoice(): Promise<'generate' | 'provide'> {
-  const { choice } = await inquirer.prompt<{ choice: 'generate' | 'provide' }>([
+  const response = await inquirer.prompt([
     {
       type: 'list',
       name: 'choice',
@@ -37,7 +37,7 @@ async function promptForWalletChoice(): Promise<'generate' | 'provide'> {
       ],
     },
   ]);
-  return choice;
+  return response.choice;
 }
 
 export async function getAuthPrivateKey(): Promise<string> {
@@ -82,7 +82,7 @@ export async function getAuthPrivateKey(): Promise<string> {
       'You can get test tokens from: https://chronicle-yellowstone-faucet.getlit.dev/'
     );
 
-    const { ready } = await inquirer.prompt([
+    const response = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'ready',
@@ -92,7 +92,7 @@ export async function getAuthPrivateKey(): Promise<string> {
       },
     ]);
 
-    if (!ready) {
+    if (!response.ready) {
       logger.error(
         'Please save the private key and fund the wallet before proceeding.'
       );

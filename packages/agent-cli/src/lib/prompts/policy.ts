@@ -4,7 +4,7 @@ import {
   getToolFromRegistry,
   isToolSupported,
 } from '@lit-protocol/agent-tool-registry';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 import { z } from 'zod';
 import { ethers } from 'ethers';
 
@@ -21,7 +21,7 @@ export async function promptForToolPolicy(
 
   const registryTool = getToolFromRegistry(tool.name);
 
-  const { usePolicy } = await inquirer.prompt([
+  const response = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'usePolicy',
@@ -30,7 +30,7 @@ export async function promptForToolPolicy(
     },
   ]);
 
-  if (!usePolicy) {
+  if (!response.usePolicy) {
     return { usePolicy: false };
   }
 
@@ -55,7 +55,7 @@ export async function promptForToolPolicy(
 
       if (isArray) {
         // Handle array fields (like allowedTokens, allowedRecipients)
-        const { useArray } = await inquirer.prompt([
+        const arrayResponse = await inquirer.prompt([
           {
             type: 'confirm',
             name: 'useArray',
@@ -65,9 +65,9 @@ export async function promptForToolPolicy(
         ]);
 
         const values: string[] = [];
-        if (useArray) {
+        if (arrayResponse.useArray) {
           while (true) {
-            const { value } = await inquirer.prompt([
+            const valueResponse = await inquirer.prompt([
               {
                 type: 'input',
                 name: 'value',
@@ -88,14 +88,14 @@ export async function promptForToolPolicy(
               },
             ]);
 
-            if (!value) break;
-            values.push(value);
+            if (!valueResponse.value) break;
+            values.push(valueResponse.value);
           }
         }
         policyValues[key] = values;
       } else {
         // Handle scalar fields (like maxAmount)
-        const { value } = await inquirer.prompt([
+        const valueResponse = await inquirer.prompt([
           {
             type: 'input',
             name: 'value',
@@ -124,9 +124,11 @@ export async function promptForToolPolicy(
 
         // Convert ETH to wei for maxAmount fields
         if (key.toLowerCase().startsWith('max')) {
-          policyValues[key] = ethers.utils.parseEther(value).toString();
+          policyValues[key] = ethers.utils
+            .parseEther(valueResponse.value)
+            .toString();
         } else {
-          policyValues[key] = value;
+          policyValues[key] = valueResponse.value;
         }
       }
     }
@@ -144,7 +146,7 @@ export async function promptForToolPolicy(
       }
     });
 
-    const { confirmed } = await inquirer.prompt([
+    const confirmResponse = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'confirmed',
@@ -153,7 +155,7 @@ export async function promptForToolPolicy(
       },
     ]);
 
-    if (!confirmed) {
+    if (!confirmResponse.confirmed) {
       return { usePolicy: false };
     }
 

@@ -4,14 +4,14 @@ import {
   LitAgentErrorType,
 } from '@lit-protocol/agent';
 
-import { logger } from './utils/logger';
-import { storage } from './utils/storage';
-import { getAuthPrivateKey } from './wallet';
-import { promptForOpenAIKey } from './prompts/config';
-import { promptForUserIntent } from './prompts/intent';
-import { promptForToolPermission } from './prompts/permissions';
-import { collectMissingParams } from './prompts/parameters';
-import { promptForToolPolicy } from './prompts/policy';
+import { logger } from './utils/logger.js';
+import { storage } from './utils/storage.js';
+import { getAuthPrivateKey } from './wallet.js';
+import { promptForOpenAIKey } from './prompts/config.js';
+import { promptForUserIntent } from './prompts/intent.js';
+import { promptForToolPermission } from './prompts/permissions.js';
+import { collectMissingParams } from './prompts/parameters.js';
+import { promptForToolPolicy } from './prompts/policy.js';
 
 export class AgentCLI {
   private litAgent: LitAgent | null = null;

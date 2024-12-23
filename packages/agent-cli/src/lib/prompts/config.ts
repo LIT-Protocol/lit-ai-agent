@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { storage, ChainConfig } from '../utils/storage';
+import { storage, ChainConfig } from '../utils/storage.js';
 
 const OPENAI_KEY_STORAGE_KEY = 'openai_api_key';
 
