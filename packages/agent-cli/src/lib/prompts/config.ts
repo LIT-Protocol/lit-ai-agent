@@ -1,5 +1,9 @@
 import inquirer from 'inquirer';
+import { createPromptModule } from 'inquirer';
 import { storage, ChainConfig } from '../utils/storage.js';
+
+// Create a new prompt module with registered prompts
+const prompt = createPromptModule();
 
 const OPENAI_KEY_STORAGE_KEY = 'openai_api_key';
 
@@ -11,7 +15,7 @@ export async function promptForOpenAIKey(): Promise<string> {
   }
 
   // Prompt user for key
-  const { apiKey } = await inquirer.prompt([
+  const { apiKey } = await prompt([
     {
       type: 'password',
       name: 'apiKey',
@@ -37,7 +41,7 @@ export async function promptForChainConfig(): Promise<ChainConfig> {
   const chains = storage.getStoredChains();
   const lastUsedChain = storage.getLastUsedChain();
 
-  const { chainChoice } = await inquirer.prompt([
+  const { chainChoice } = await prompt([
     {
       type: 'list',
       name: 'chainChoice',
@@ -53,7 +57,7 @@ export async function promptForChainConfig(): Promise<ChainConfig> {
   ]);
 
   if (chainChoice === 'Add New Chain') {
-    const nameResponse = await inquirer.prompt<{ name: string }>([
+    const nameResponse = await prompt<{ name: string }>([
       {
         type: 'input',
         name: 'name',
@@ -63,7 +67,7 @@ export async function promptForChainConfig(): Promise<ChainConfig> {
       },
     ]);
 
-    const rpcResponse = await inquirer.prompt<{ rpcUrl: string }>([
+    const rpcResponse = await prompt<{ rpcUrl: string }>([
       {
         type: 'input',
         name: 'rpcUrl',
@@ -72,7 +76,7 @@ export async function promptForChainConfig(): Promise<ChainConfig> {
       },
     ]);
 
-    const chainIdResponse = await inquirer.prompt<{ chainId: string }>([
+    const chainIdResponse = await prompt<{ chainId: string }>([
       {
         type: 'input',
         name: 'chainId',
