@@ -1,4 +1,4 @@
-import inquirer from 'inquirer';
+import { inquirer } from './setup';
 import type { ToolInfo } from '@lit-protocol/agent-tool-registry';
 import { logger } from '../utils/logger';
 

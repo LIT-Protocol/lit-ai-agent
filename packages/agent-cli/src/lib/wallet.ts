@@ -1,4 +1,4 @@
-import inquirer from 'inquirer';
+import { inquirer } from './prompts/setup';
 import { ethers } from 'ethers';
 import { storage } from './utils/storage';
 import { logger } from './utils/logger';
