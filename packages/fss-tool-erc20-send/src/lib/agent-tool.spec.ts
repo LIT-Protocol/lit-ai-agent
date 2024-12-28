@@ -10,6 +10,8 @@ describe('SendERC20LitAction', () => {
     tokenIn: '0x1234567890123456789012345678901234567890',
     recipientAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
     amountIn: '1.5',
+    chainId: '1',
+    rpcUrl: 'https://eth-mainnet.example.com',
   };
 
   describe('SendERC20LitActionSchema', () => {
@@ -132,7 +134,13 @@ describe('SendERC20LitAction', () => {
     });
 
     it('should list all required parameters', () => {
-      const requiredParams = ['tokenIn', 'recipientAddress', 'amountIn'];
+      const requiredParams = [
+        'tokenIn',
+        'recipientAddress',
+        'amountIn',
+        'chainId',
+        'rpcUrl',
+      ];
       expect(SendERC20LitActionMetadata.required).toEqual(requiredParams);
     });
 
