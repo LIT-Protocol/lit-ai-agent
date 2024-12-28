@@ -27,29 +27,29 @@ The Lit AI Agent project consists of several packages that work together to prov
 3. Select the `Generate New` options to generate a new Lit Auth private key
 4. Follow the instructions to back up the key and fund the address with Lit test tokens:
    - Your private key will be saved in `.agent-cli-storage/auth-wallet`
-    ```bash
-    ℹ️  Generated new Lit auth wallet with address: 0xYOUR_ADDRESS
-    Before continuing:
-    1. Back up your private key in a secure location
-    2. Fund your wallet (0xYOUR_ADDRESS) with Lit test tokens
-    Get test tokens from: https://chronicle-yellowstone-faucet.getlit.dev/
-    ```
+   ```bash
+   ℹ️  Generated new Lit auth wallet with address: 0xYOUR_ADDRESS
+   Before continuing:
+   1. Back up your private key in a secure location
+   2. Fund your wallet (0xYOUR_ADDRESS) with Lit test tokens
+   Get test tokens from: https://chronicle-yellowstone-faucet.getlit.dev/
+   ```
 5. Confirm in the CLI that you have funded your wallet
 6. Provide your OpenAI API key to the CLI
    - Please make sure you have the `gpt-4o-mini` model enabled in your API key
 7. You will be prompted:
    - Press `ENTER` or type `Y` and hit `ENTER` to use the default registry
-    ```bash
-    ? Would you like to use the default Lit PKP Tool Policy Registry? (recommended) (Y/n)
-    ```
+   ```bash
+   ? Would you like to use the default Lit PKP Tool Policy Registry? (recommended) (Y/n)
+   ```
 8. You should see that the Lit Agent has now been initialized and is ready to use
-    ```bash
-    ✅ Successfully initialized Lit Agent
-    ```
+   ```bash
+   ✅ Successfully initialized Lit Agent
+   ```
 9. You are now prompted with what you'd like the Lit Agent to do
-    ```bash
-    ? What would you like to do?
-    ```
+   ```bash
+   ? What would you like to do?
+   ```
 10. Enter a prompt to get the Lit Agent to send ERC20 tokens to an address:
     - For now there is only one Lit Agent tool available: [ERC20 Send](./packages/agent-tool-erc20-send)
     - You can use the `ERC20 Send` tool to send ERC20 tokens to an address by specifying:
@@ -84,6 +84,7 @@ The Lit AI Agent project consists of several packages that work together to prov
     ℹ️  Executing tool...
     ```
 12. Because we've just minted the Lit Agent wallet, there are currently no permitted Agent Tools for it to use. You should see a prompt for the CLI to permit the Agent Tool that the Lit Agent is attempting to use to fulfil your intent:
+
     ```
     ⚠️  Tool Permission Required
 
@@ -96,10 +97,12 @@ The Lit AI Agent project consists of several packages that work together to prov
       - amountIn: The amount of tokens to send, specified as a string. This should be a decimal number (e.g. "1.5" or "100"). The amount will be automatically adjusted based on the token's decimals.
       - chainId: The ID of the blockchain network to send the tokens on (e.g. 1 for Ethereum mainnet, 84532 for Base Sepolia).
       - rpcUrl: The RPC URL of the blockchain network to connect to (e.g. "https://base-sepolia-rpc.publicnode.com").
-    
+
     ? Would you like to permit this tool for your agent wallet? (Y/n)
     ```
+
     - Press `ENTER` or type `Y` and hit `ENTER` to permit the Agent Tool for your Lit Agent's wallet
+
 13. If the Agent Tool has a policy associated with it, the CLI will prompt you with the option to configure a policy:
     ```
     ⚠️  Tool Policy Configuration
@@ -109,6 +112,7 @@ The Lit AI Agent project consists of several packages that work together to prov
     - While this is optional, it's highly recommended to configure a policy for your Agent Tools to ensure they are within the bounds you are comfortable with
     - Press `ENTER` or type `Y` and hit `ENTER` to being the policy configuration process
 14. The CLI will now parse the Agent Tool's policy and prompt you with the option to configure each parameter:
+
     - For the `SendERC20` tool, the CLI will prompt you with the option to configure:
       - `maxAmount` - The maximum amount of tokens the Lit Agent is allowed to send in a single transaction
         - Specify this is as a decimal or whole number of tokens. The `SendERC20` tool will automatically adjust the amount based on the token's decimals, so that `20` becomes `20000000000000000000` if the token has 18 decimals
@@ -126,6 +130,7 @@ The Lit AI Agent project consists of several packages that work together to prov
           - You can also just press `ENTER` to skip this step
         - This configuration step follows the same process as the `allowedTokens` step
     - After going through all the configuration steps, you will be prompted to confirm the policy configuration:
+
       ```bash
       ⚠️  Tool Policy Configuration
       Tool: SendERC20
@@ -133,10 +138,10 @@ The Lit AI Agent project consists of several packages that work together to prov
       ✔ Enter maxAmount (in ETH): 20
       ✔ Would you like to configure allowedTokens? Yes
       ✔ Enter a value for allowedTokens (or leave empty to finish): 0x4070c8325e278ca1056e602e08d16d2D5cd79b27
-      ✔ Enter a value for allowedTokens (or leave empty to finish): 
+      ✔ Enter a value for allowedTokens (or leave empty to finish):
       ✔ Would you like to configure allowedRecipients? Yes
       ✔ Enter a value for allowedRecipients (or leave empty to finish): 0x600DC16993EA1AbdA674A20d432F93041cDa2ef4
-      ✔ Enter a value for allowedRecipients (or leave empty to finish): 
+      ✔ Enter a value for allowedRecipients (or leave empty to finish):
 
       ℹ️  Policy Summary:
       type: SendERC20
@@ -146,7 +151,9 @@ The Lit AI Agent project consists of several packages that work together to prov
       allowedRecipients: 0x600DC16993EA1AbdA674A20d432F93041cDa2ef4
       ? Would you like to proceed with this policy? (Y/n)
       ```
+
       - Press `ENTER` or type `Y` and hit `ENTER` to confirm the policy configuration
+
 15. You should see that the policy has been successfully registered on-chain using Lit's [PKP Tool Policy Registry](./packages/agent-contracts/src/PKPToolPolicyRegistry.sol):
     ```
     ℹ️  Registering policy on chain...
@@ -193,7 +200,7 @@ While that was a lot of steps, now that the Lit Agent is configured, if you run 
 - **NOTE:** You can also bypass the Chain selection prompt by specifying the RPC URL and chain ID in the prompt like so:
 
 ```
-✔ What would you like to do? send 20 0x4070c8325e278ca1056e602e08d16d2D5cd79b27 to 0x600DC16993EA1AbdA674A20d432F93041cDa2ef4 using rpcUrl: 
+✔ What would you like to do? send 20 0x4070c8325e278ca1056e602e08d16d2D5cd79b27 to 0x600DC16993EA1AbdA674A20d432F93041cDa2ef4 using rpcUrl:
 https://base-sepolia-rpc.publicnode.com and chainId: 84532
 
 ℹ️  Executing tool...
@@ -211,7 +218,7 @@ Result: {
 
 ## Development
 
-This is an Nx monorepo using pnpm workspaces. Here's how to work with it:
+This is an Nx monorepo using pnpm v9 workspaces. Here's how to work with it:
 
 ```bash
 # Build a specific package
