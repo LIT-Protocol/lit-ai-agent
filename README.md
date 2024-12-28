@@ -51,7 +51,7 @@ The Lit AI Agent project consists of several packages that work together to prov
     ? What would you like to do?
     ```
 10. Enter a prompt to get the Lit Agent to send ERC20 tokens to an address:
-    - For now there is only one Lit Agent tool available: [ERC20 Send](./packages/agent-tool-erc20-send)
+    - For now there is only one Lit Agent tool available: [ERC20 Send](./packages/fss-tool-erc20-send)
     - You can use the `ERC20 Send` tool to send ERC20 tokens to an address by specifying:
       - The amount of tokens to send
       - The ERC20 contract address
@@ -60,7 +60,7 @@ The Lit AI Agent project consists of several packages that work together to prov
         send <YOUR_AMOUNT> <ERC20_CONTRACT_ADDRESS> to <RECIPIENT_ADDRESS>
         ```
     - For demo purposes, an ERC20 contract address has been deployed on Base Sepolia that allows anyone to mint tokens to any address, it's available at: `0x4070c8325e278ca1056e602e08d16d2D5cd79b27`
-    - There is a mint Forge script in the [./packages/agent-contracts](./packages/agent-contracts) package that you can use to mint tokens to the address you'd like to test with:
+    - There is a mint Forge script in the [./packages/fss-contracts](./packages/fss-contracts) package that you can use to mint tokens to the address you'd like to test with:
       - Don't forget to initialize the `.env` file using `cp .env.example .env`, the required ENVs for the below commands have default values
       - You'll also want to do the following for the Lit Agent wallet:
         - **NOTE:** Your Lit Agent's wallet address is saved to the `.agent-signer-storage/pkp` file
@@ -78,7 +78,7 @@ The Lit AI Agent project consists of several packages that work together to prov
       ```bash
       send 20 0x4070c8325e278ca1056e602e08d16d2D5cd79b27 to 0x600DC16993EA1AbdA674A20d432F93041cDa2ef4
       ```
-      the Lit Agent will find a Lit Agent tool registered in the [./packages/agent-tool-registry](./packages/agent-tool-registry) package that satisfies your intent.
+      the Lit Agent will find a Lit Agent tool registered in the [./packages/fss-tool-registry](./packages/fss-tool-registry) package that satisfies your intent.
 11. You should see that the Lit Agent found a Lit Agent tool and is attempting to execute it:
     ```bash
     ℹ️  Executing tool...
@@ -147,7 +147,7 @@ The Lit AI Agent project consists of several packages that work together to prov
       ? Would you like to proceed with this policy? (Y/n)
       ```
       - Press `ENTER` or type `Y` and hit `ENTER` to confirm the policy configuration
-15. You should see that the policy has been successfully registered on-chain using Lit's [PKP Tool Policy Registry](./packages/agent-contracts/src/PKPToolPolicyRegistry.sol):
+15. You should see that the policy has been successfully registered on-chain using Lit's [PKP Tool Policy Registry](./packages/fss-contracts/src/PKPToolPolicyRegistry.sol):
     ```
     ℹ️  Registering policy on chain...
     ✅ Policy successfully registered! Transaction hash: 0xb8ab7e8e45ffd6cdaffbf44247c95bfb36ab548474786b1b25da29cfa26657d2
