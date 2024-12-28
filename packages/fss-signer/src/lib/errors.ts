@@ -10,13 +10,22 @@ export enum LitAgentErrorType {
   TOOL_POLICY_REGISTRATION_FAILED = 'TOOL_POLICY_REGISTRATION_FAILED',
 }
 
+export type ErrorDetails = {
+  name?: string;
+  message?: string;
+  stack?: string;
+  type?: LitAgentErrorType;
+  details?: unknown;
+  [key: string]: unknown;
+};
+
 export class LitAgentError extends Error {
   public readonly serializedDetails: string;
 
   constructor(
     public readonly type: LitAgentErrorType,
     message: string,
-    public readonly details?: Record<string, any>
+    public readonly details?: Record<string, ErrorDetails | unknown>
   ) {
     super(message);
     this.name = 'LitAgentError';

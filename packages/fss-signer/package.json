@@ -5,16 +5,17 @@
     "access": "public"
   },
   "dependencies": {
-    "@lit-protocol/auth-helpers": "catalog:",
-    "@lit-protocol/constants": "catalog:",
-    "@lit-protocol/contracts-sdk": "catalog:",
-    "@lit-protocol/lit-node-client-nodejs": "catalog:",
-    "@lit-protocol/types": "catalog:",
-    "ethers": "catalog:",
-    "node-localstorage": "^3.0.5"
+    "@dotenvx/dotenvx": "^1.31.3",
+    "@lit-protocol/auth-helpers": "7.0.2",
+    "@lit-protocol/constants": "7.0.2",
+    "@lit-protocol/contracts-sdk": "7.0.2",
+    "@lit-protocol/lit-node-client-nodejs": "7.0.2",
+    "@lit-protocol/types": "7.0.2",
+    "ethers": "5.7.2",
+    "node-localstorage": "^3.0.5",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.31.3",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
     "@types/node-localstorage": "^1.3.3"

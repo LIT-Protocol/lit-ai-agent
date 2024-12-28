@@ -5,14 +5,13 @@
     "access": "public"
   },
   "dependencies": {
+    "@lit-protocol/constants": "7.0.2",
     "@lit-protocol/fss-signer": "workspace:*",
     "@lit-protocol/fss-tool-registry": "workspace:*",
-    "@lit-protocol/constants": "catalog:",
-    "bs58": "^5.0.0",
-    "ethers": "catalog:",
+    "bs58": "^6.0.0",
+    "ethers": "5.7.2",
     "openai": "^4.77.0",
-    "tslib": "^2.3.0",
-    "zod": "^3.24.1"
+    "tslib": "^2.3.0"
   },
   "type": "commonjs",
   "main": "./dist/src/index.js",

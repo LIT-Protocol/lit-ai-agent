@@ -4,27 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  default:
-    '@lit-protocol/auth-helpers':
-      specifier: 7.0.2
-      version: 7.0.2
-    '@lit-protocol/constants':
-      specifier: 7.0.2
-      version: 7.0.2
-    '@lit-protocol/contracts-sdk':
-      specifier: 7.0.2
-      version: 7.0.2
-    '@lit-protocol/lit-node-client-nodejs':
-      specifier: 7.0.2
-      version: 7.0.2
-    '@lit-protocol/types':
-      specifier: 7.0.2
-      version: 7.0.2
-    ethers:
-      specifier: 5.7.2
-      version: 5.7.2
-
 importers:
 
   .:
@@ -99,7 +78,7 @@ importers:
   packages/fss-cli:
     dependencies:
       '@lit-protocol/constants':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.6.3)
       '@lit-protocol/fss-signer':
         specifier: workspace:*
@@ -110,11 +89,8 @@ importers:
       '@lit-protocol/full-self-signing':
         specifier: workspace:*
         version: link:../full-self-signing
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
       ethers:
-        specifier: 'catalog:'
+        specifier: 5.7.2
         version: 5.7.2
       inquirer:
         specifier: ^12.3.0
@@ -138,31 +114,34 @@ importers:
 
   packages/fss-signer:
     dependencies:
+      '@dotenvx/dotenvx':
+        specifier: ^1.31.3
+        version: 1.31.3
       '@lit-protocol/auth-helpers':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.6.3)
       '@lit-protocol/constants':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.6.3)
       '@lit-protocol/contracts-sdk':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(date-and-time@2.4.3)(multiformats@9.9.0)(typescript@5.6.3)
       '@lit-protocol/lit-node-client-nodejs':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.6.3)
       '@lit-protocol/types':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2
       ethers:
-        specifier: 'catalog:'
+        specifier: 5.7.2
         version: 5.7.2
       node-localstorage:
         specifier: ^3.0.5
         version: 3.0.5
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
     devDependencies:
-      '@dotenvx/dotenvx':
-        specifier: ^1.31.3
-        version: 1.31.3
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
@@ -179,7 +158,7 @@ importers:
         specifier: workspace:*
         version: link:../fss-tool-policy-base
       ethers:
-        specifier: 'catalog:'
+        specifier: ^5.7.2
         version: 5.7.2
       tslib:
         specifier: ^2.8.1
@@ -212,11 +191,8 @@ importers:
       '@lit-protocol/fss-tool-erc20-send':
         specifier: workspace:*
         version: link:../fss-tool-erc20-send
-      bs58:
-        specifier: ^6.0.0
-        version: 6.0.0
       ethers:
-        specifier: 'catalog:'
+        specifier: 5.7.2
         version: 5.7.2
       tslib:
         specifier: ^2.3.0
@@ -225,7 +201,7 @@ importers:
   packages/full-self-signing:
     dependencies:
       '@lit-protocol/constants':
-        specifier: 'catalog:'
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.6.3)
       '@lit-protocol/fss-signer':
         specifier: workspace:*
@@ -234,10 +210,10 @@ importers:
         specifier: workspace:*
         version: link:../fss-tool-registry
       bs58:
-        specifier: ^5.0.0
-        version: 5.0.0
+        specifier: ^6.0.0
+        version: 6.0.0
       ethers:
-        specifier: 'catalog:'
+        specifier: 5.7.2
         version: 5.7.2
       openai:
         specifier: ^4.77.0
@@ -245,9 +221,6 @@ importers:
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
-      zod:
-        specifier: ^3.24.1
-        version: 3.24.1
 
 packages:
 
@@ -2053,9 +2026,6 @@ packages:
   bare-events@2.5.0:
     resolution: {integrity: sha512-/E8dDe9dsbLyh2qrZ64PEPadOQ0F4gbl1sUJOrmph7xOiIxfY8vwab/4bFLh4Y88/Hk/ujKcrQKc+ps0mv873A==}
 
-  base-x@4.0.0:
-    resolution: {integrity: sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==}
-
   base-x@5.0.0:
     resolution: {integrity: sha512-sMW3VGSX1QWVFA6l8U62MLKz29rRfpTlYdCqLdpLo1/Yd4zZwSbnUaDfciIAowAqvq7YFnWq9hrhdg1KYgc1lQ==}
 
@@ -2111,9 +2081,6 @@ packages:
   bs-logger@0.2.6:
     resolution: {integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==}
     engines: {node: '>= 6'}
-
-  bs58@5.0.0:
-    resolution: {integrity: sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==}
 
   bs58@6.0.0:
     resolution: {integrity: sha512-PD0wEnEYg6ijszw/u8s+iI3H17cTymlrwkKhDhPZq+Sokl3AU4htyBFTjAeNAlCCmg0f53g6ih3jATyCKftTfw==}
@@ -2245,10 +2212,6 @@ packages:
   commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
-
-  commander@12.1.0:
-    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
 
   compressible@2.0.18:
     resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
@@ -7159,8 +7122,6 @@ snapshots:
   bare-events@2.5.0:
     optional: true
 
-  base-x@4.0.0: {}
-
   base-x@5.0.0: {}
 
   base64-js@1.5.1: {}
@@ -7231,10 +7192,6 @@ snapshots:
   bs-logger@0.2.6:
     dependencies:
       fast-json-stable-stringify: 2.1.0
-
-  bs58@5.0.0:
-    dependencies:
-      base-x: 4.0.0
 
   bs58@6.0.0:
     dependencies:
@@ -7346,8 +7303,6 @@ snapshots:
       delayed-stream: 1.0.0
 
   commander@11.1.0: {}
-
-  commander@12.1.0: {}
 
   compressible@2.0.18:
     dependencies:

@@ -230,7 +230,7 @@ export class LitAgent {
               result,
             };
           }
-        } catch (e) {
+        } catch {
           // If response is not JSON, continue with original result
         }
       }
@@ -259,11 +259,19 @@ export class LitAgent {
           reason: error.message,
         };
       }
-      throw new LitAgentError(
-        LitAgentErrorType.TOOL_EXECUTION_FAILED,
-        error instanceof Error ? error.message : 'Failed to execute tool',
-        { ipfsCid, params: initialParams, originalError: error }
-      );
+      if (error instanceof Error) {
+        const litError = error as Error & { type?: string; details?: unknown };
+        return {
+          success: false,
+          reason: `Failed to execute tool: ${litError.message}${
+            litError.type ? ` (${litError.type})` : ''
+          }`,
+        };
+      }
+      return {
+        success: false,
+        reason: 'Failed to execute tool: Unknown error',
+      };
     }
   }
 

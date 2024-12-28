@@ -48,6 +48,15 @@ export interface ToolInfo {
   }[];
 }
 
+export interface PolicyValues {
+  type: string;
+  version: string;
+  maxAmount?: string;
+  allowedTokens?: string[];
+  allowedRecipients?: string[];
+  [key: string]: string | string[] | undefined;
+}
+
 export function listAvailableTools(): ToolInfo[] {
   return [
     {
@@ -86,7 +95,7 @@ export function getToolFromRegistry(toolName: string) {
 export function validateParamsAgainstPolicy(
   tool: ToolInfo,
   params: Record<string, string>,
-  policyValues: any
+  policyValues: PolicyValues
 ): void {
   // Check each policy field
   for (const [key, value] of Object.entries(policyValues)) {

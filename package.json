@@ -4,7 +4,9 @@
   "license": "MIT",
   "scripts": {
     "build": "npx nx run-many -t build",
-    "clean": "node tools/clean.js"
+    "clean": "node tools/clean.js",
+    "lint": "npx nx run-many -t lint",
+    "test": "npx nx run-many -t test -- --passWithNoTests"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
