@@ -6,8 +6,7 @@
   },
   "dependencies": {
     "@lit-protocol/fss-tool-erc20-send": "workspace:*",
-    "ethers": "catalog:",
-    "bs58": "^6.0.0",
+    "ethers": "5.7.2",
     "tslib": "^2.3.0"
   },
   "type": "commonjs",

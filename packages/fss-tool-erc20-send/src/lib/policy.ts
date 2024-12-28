@@ -14,6 +14,7 @@ export interface SendERC20Policy extends BaseAgentToolPolicy {
   maxAmount: string;
   allowedTokens: EthereumAddress[];
   allowedRecipients: EthereumAddress[];
+  [key: string]: string | string[] | undefined;
 }
 
 export const SendERC20PolicySchema = BaseLitActionPolicySchema.extend({

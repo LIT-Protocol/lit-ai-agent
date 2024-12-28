@@ -18,8 +18,15 @@ export interface CapacityCreditDelegationAuthSigOptions {
   expiration?: string;
 }
 
+export interface AuthSig {
+  sig: string;
+  derivedVia: string;
+  signedMessage: string;
+  address: string;
+}
+
 export interface PkpSessionSigsOptions {
-  capacityDelegationAuthSig?: any;
+  capacityDelegationAuthSig?: AuthSig;
   expiration?: string;
 }
 
@@ -39,11 +46,11 @@ export interface ExecuteJsParams {
   /**
    * Optional authentication signature
    */
-  authSig?: any;
+  authSig?: AuthSig;
   /**
    * Optional parameters to pass to the JavaScript code
    */
-  jsParams?: Record<string, any>;
+  jsParams?: Record<string, unknown>;
   /**
    * Enable debug mode
    */
@@ -53,6 +60,12 @@ export interface ExecuteJsParams {
 /**
  * Options for setting a tool policy
  */
+export interface ToolPolicyData {
+  maxAmount: string | number;
+  allowedTokens: string[];
+  allowedRecipients: string[];
+}
+
 export interface SetToolPolicyOptions {
   /**
    * IPFS CID of the tool (must be CID v0)
@@ -61,7 +74,7 @@ export interface SetToolPolicyOptions {
   /**
    * Tool-specific policy data that will be ABI encoded
    */
-  policy: any;
+  policy: ToolPolicyData;
   /**
    * Version of the policy (e.g., "1.0.0")
    */
@@ -117,6 +130,12 @@ export interface ToolPolicyRegistryConfig {
   contractAddress: string;
 }
 
+export interface PermittedAction {
+  ipfsCid: string;
+  scopes: string[];
+  status: string;
+}
+
 export interface AgentSigner {
   setToolPolicy(options: SetToolPolicyOptions): Promise<ContractTransaction>;
   removeToolPolicy(ipfsCid: string): Promise<ContractTransaction>;
@@ -127,7 +146,7 @@ export interface AgentSigner {
   pkpPermitLitAction(params: {
     ipfsCid: string;
     signingScopes?: string[];
-  }): Promise<any>;
-  pkpListPermittedActions(): Promise<any>;
+  }): Promise<PermittedAction>;
+  pkpListPermittedActions(): Promise<PermittedAction[]>;
   disconnectLitNodeClient(): Promise<void>;
 }

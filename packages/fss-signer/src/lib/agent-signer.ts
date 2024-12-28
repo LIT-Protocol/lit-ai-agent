@@ -169,7 +169,7 @@ export class AgentSigner {
         this.ethersWallet.address,
         '0x0000000000000000000000000000000000000000000000000000000000000000' // dummy IPFS CID
       );
-    } catch (error) {
+    } catch {
       throw new Error(
         `Failed to initialize tool policy registry: Contract not found at ${contractAddress} or is not a valid tool policy registry`
       );
