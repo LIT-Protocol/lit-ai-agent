@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@lit-protocol/fss-tool-erc20-send": "workspace:*",
+    "@lit-protocol/fss-tool-swap-uniswap": "workspace:*",
     "ethers": "5.7.2",
     "tslib": "^2.3.0"
   },

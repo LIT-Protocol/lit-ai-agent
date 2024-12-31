@@ -16,6 +16,9 @@
   "include": ["src/**/*.ts"],
   "references": [
     {
+      "path": "../fss-tool-swap-uniswap/tsconfig.lib.json"
+    },
+    {
       "path": "../fss-tool-policy-base/tsconfig.lib.json"
     },
     {

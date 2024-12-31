@@ -7,6 +7,9 @@
       "path": "../full-self-signing"
     },
     {
+      "path": "../fss-tool-swap-uniswap"
+    },
+    {
       "path": "../fss-tool-policy-base"
     },
     {

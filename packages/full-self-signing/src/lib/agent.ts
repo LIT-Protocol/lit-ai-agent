@@ -166,7 +166,12 @@ export class LitAgent {
       let validatedParams = finalParams;
       if (decodedPolicy) {
         try {
-          validateParamsAgainstPolicy(tool, validatedParams, decodedPolicy);
+          await validateParamsAgainstPolicy(
+            tool,
+            validatedParams,
+            decodedPolicy,
+            this.signer.provider
+          );
         } catch (error) {
           // If we have a failedPolicyCallback, try to get new parameters
           if (options.failedPolicyCallback && error instanceof Error) {
@@ -180,7 +185,12 @@ export class LitAgent {
             // If new parameters provided, validate them again
             if (newParams) {
               validatedParams = newParams;
-              validateParamsAgainstPolicy(tool, validatedParams, decodedPolicy);
+              await validateParamsAgainstPolicy(
+                tool,
+                validatedParams,
+                decodedPolicy,
+                this.signer.provider
+              );
             } else {
               // If no new parameters provided, throw the original error
               throw new LitAgentError(

@@ -47,21 +47,55 @@ export async function collectMissingParams(
                 return `${paramName} is required`;
               }
 
-              // If parameter name contains 'amount', validate it's a valid number
-              if (paramName.toLowerCase().includes('amount')) {
-                try {
-                  ethers.utils.parseEther(input);
-                  return true;
-                } catch {
-                  return 'Invalid amount. Please enter a valid number.';
-                }
-              }
+              // Tool-specific parameter validation
+              switch (tool.name) {
+                case 'ERC20Send':
+                  if (paramName.toLowerCase().includes('amount')) {
+                    try {
+                      ethers.utils.parseEther(input);
+                      return true;
+                    } catch {
+                      return 'Invalid amount. Please enter a valid number.';
+                    }
+                  }
+                  if (paramName.toLowerCase().includes('address')) {
+                    if (!ethers.utils.isAddress(input)) {
+                      return 'Invalid Ethereum address';
+                    }
+                  }
+                  break;
 
-              // If parameter name contains 'address', validate it's a valid Ethereum address
-              if (paramName.toLowerCase().includes('address')) {
-                if (!ethers.utils.isAddress(input)) {
-                  return 'Invalid Ethereum address';
-                }
+                case 'SwapUniswap':
+                  if (paramName === 'amountIn') {
+                    try {
+                      ethers.utils.parseEther(input);
+                      return true;
+                    } catch {
+                      return 'Invalid input amount. Please enter a valid number.';
+                    }
+                  }
+                  if (paramName === 'tokenIn' || paramName === 'tokenOut') {
+                    if (!ethers.utils.isAddress(input)) {
+                      return 'Invalid token address';
+                    }
+                  }
+                  break;
+
+                default:
+                  // Generic validation for unknown tools
+                  if (paramName.toLowerCase().includes('amount')) {
+                    try {
+                      ethers.utils.parseEther(input);
+                      return true;
+                    } catch {
+                      return 'Invalid amount. Please enter a valid number.';
+                    }
+                  }
+                  if (paramName.toLowerCase().includes('address') || paramName.toLowerCase().includes('token')) {
+                    if (!ethers.utils.isAddress(input)) {
+                      return 'Invalid Ethereum address';
+                    }
+                  }
               }
 
               return true;

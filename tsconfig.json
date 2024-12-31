@@ -20,6 +20,9 @@
     },
     {
       "path": "./packages/full-self-signing"
+    },
+    {
+      "path": "./packages/fss-tool-swap-uniswap"
     }
   ]
 }

@@ -51,6 +51,12 @@ export class AgentSigner {
 
   private storage = new LocalStorageImpl();
 
+  public readonly provider: ethers.providers.Provider;
+
+  constructor(provider: ethers.providers.Provider) {
+    this.provider = provider;
+  }
+
   /**
    * Get PKP info from storage
    */
@@ -99,7 +105,7 @@ export class AgentSigner {
       toolPolicyRegistryConfig?: ToolPolicyRegistryConfig;
     }
   ): Promise<AgentSigner> {
-    const agentSigner = new AgentSigner();
+    const agentSigner = new AgentSigner(new ethers.providers.JsonRpcProvider(toolPolicyRegistryConfig.rpcUrl));
 
     // Initialize Lit Node Client
     agentSigner.litNodeClient = new LitNodeClientNodeJs({
