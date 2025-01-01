@@ -4,16 +4,7 @@
   "include": [],
   "references": [
     {
-      "path": "../fss-tool-signing-simple"
-    },
-    {
-      "path": "../fss-tool-swap-uniswap"
-    },
-    {
       "path": "../fss-tool-policy-base"
-    },
-    {
-      "path": "../fss-tool-erc20-send"
     },
     {
       "path": "./tsconfig.lib.json"
@@ -22,4 +13,4 @@
       "path": "./tsconfig.spec.json"
     }
   ]
-}
+} 

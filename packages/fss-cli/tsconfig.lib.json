@@ -23,6 +23,9 @@
       "path": "../full-self-signing/tsconfig.lib.json"
     },
     {
+      "path": "../fss-tool-signing-simple/tsconfig.lib.json"
+    },
+    {
       "path": "../fss-tool-swap-uniswap/tsconfig.lib.json"
     },
     {

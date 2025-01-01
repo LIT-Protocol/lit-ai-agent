@@ -71,30 +71,40 @@ export async function setToolPolicy(
   const { ipfsCid, policy, version } = options;
 
   try {
-    // Ensure maxAmount is a valid BigNumber
-    const maxAmount = ethers.BigNumber.from(policy.maxAmount);
+    let encodedPolicy;
 
-    // Validate addresses in arrays
-    const allowedTokens = (policy.allowedTokens || []).map((addr: string) =>
-      ethers.utils.getAddress(addr)
-    );
-    const allowedRecipients = (policy.allowedRecipients || []).map(
-      (addr: string) => ethers.utils.getAddress(addr)
-    );
+    // Handle different policy types
+    if (policy.type === 'SigningSimple') {
+      // Encode SigningSimple policy - only needs allowedMessagePrefixes
+      encodedPolicy = ethers.utils.defaultAbiCoder.encode(
+        ['tuple(string[] allowedMessagePrefixes)'],
+        [{
+          allowedMessagePrefixes: policy.allowedMessagePrefixes || [],
+        }]
+      );
+    } else {
+      // Default case for SendERC20 and SwapUniswap
+      const maxAmount = ethers.BigNumber.from(policy.maxAmount);
+      const allowedTokens = (policy.allowedTokens || []).map((addr: string) =>
+        ethers.utils.getAddress(addr)
+      );
+      const allowedRecipients = (policy.allowedRecipients || []).map(
+        (addr: string) => ethers.utils.getAddress(addr)
+      );
 
-    // ABI encode the policy data with the correct format
-    const encodedPolicy = ethers.utils.defaultAbiCoder.encode(
-      [
-        'tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)',
-      ],
-      [
-        {
-          maxAmount,
-          allowedTokens,
-          allowedRecipients,
-        },
-      ]
-    );
+      encodedPolicy = ethers.utils.defaultAbiCoder.encode(
+        [
+          'tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)',
+        ],
+        [
+          {
+            maxAmount,
+            allowedTokens,
+            allowedRecipients,
+          },
+        ]
+      );
+    }
 
     // Encode the function call
     const data = contract.interface.encodeFunctionData('setActionPolicy', [

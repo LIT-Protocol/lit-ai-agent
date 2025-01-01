@@ -26,6 +26,20 @@ import {
   IPFS_CID as SwapUniswapIpfsCid,
 } from '@lit-protocol/fss-tool-swap-uniswap';
 
+import {
+  SigningSimpleLitActionParameters,
+  SigningSimpleLitActionSchema,
+  SigningSimpleLitActionMetadata,
+  SigningSimpleLitActionParameterDescriptions,
+  isValidSigningSimpleParameters,
+  signingSimpleLitActionDescription,
+  SigningSimplePolicy,
+  SigningSimplePolicySchema,
+  encodeSigningSimplePolicy,
+  decodeSigningSimplePolicy,
+  IPFS_CID as SigningSimpleIpfsCid,
+} from '@lit-protocol/fss-tool-signing-simple';
+
 import { ethers } from 'ethers';
 
 /**
@@ -80,7 +94,29 @@ export const SwapUniswap = {
   },
 } as const;
 
-export const SUPPORTED_TOOLS = ['SendERC20', 'SwapUniswap'] as const;
+export const SigningSimple = {
+  description: signingSimpleLitActionDescription,
+  ipfsCid: SigningSimpleIpfsCid,
+
+  Parameters: {
+    type: {} as SigningSimpleLitActionParameters,
+    schema: SigningSimpleLitActionSchema,
+    descriptions: SigningSimpleLitActionParameterDescriptions,
+    validate: isValidSigningSimpleParameters,
+  },
+
+  metadata: SigningSimpleLitActionMetadata,
+
+  Policy: {
+    type: {} as SigningSimplePolicy,
+    schema: SigningSimplePolicySchema,
+    encode: encodeSigningSimplePolicy,
+    decode: (encodedPolicy: string, version: string) =>
+      decodeSigningSimplePolicy(encodedPolicy, version),
+  },
+} as const;
+
+export const SUPPORTED_TOOLS = ['SendERC20', 'SwapUniswap', 'SigningSimple'] as const;
 export type SupportedToolTypes = (typeof SUPPORTED_TOOLS)[number];
 
 export interface ToolInfo {
@@ -99,6 +135,7 @@ export interface PolicyValues {
   maxAmount?: string;
   allowedTokens?: string[];
   allowedRecipients?: string[];
+  allowedMessagePrefixes?: string[];
   [key: string]: string | string[] | undefined;
 }
 
@@ -129,6 +166,17 @@ export function listAvailableTools(): ToolInfo[] {
         })
       ),
     },
+    {
+      name: 'SigningSimple',
+      description: SigningSimple.description as string,
+      ipfsCid: SigningSimple.ipfsCid,
+      parameters: Object.entries(SigningSimple.Parameters.descriptions).map(
+        ([name, description]) => ({
+          name,
+          description: description as string,
+        })
+      ),
+    },
   ];
 }
 
@@ -151,6 +199,7 @@ export function getToolFromRegistry(toolName: string) {
 
   if (toolName === 'SendERC20') return SendERC20;
   if (toolName === 'SwapUniswap') return SwapUniswap;
+  if (toolName === 'SigningSimple') return SigningSimple;
 
   // TypeScript will catch if we miss any supported tool
   throw new Error(`Tool ${toolName} is supported but not implemented in registry`);
@@ -158,8 +207,6 @@ export function getToolFromRegistry(toolName: string) {
 
 /**
  * Validates parameters against a policy.
- * This version retrieves on-chain decimals for the relevant token(s) before
- * enforcing numeric restrictions (like `maxAmount`).
  */
 export async function validateParamsAgainstPolicy(
   tool: ToolInfo,
@@ -178,23 +225,38 @@ export async function validateParamsAgainstPolicy(
     // Skip these known fields
     if (key === 'type' || key === 'version') continue;
 
-    // Handle arrays (like allowedTokens, allowedRecipients)
+    // Handle arrays (like allowedTokens, allowedRecipients, allowedMessagePrefixes)
     if (Array.isArray(value) && value.length > 0) {
-      // Find the parameter name that might match this policy field
-      const paramKey = Object.keys(params).find((param) =>
-        key
-          .toLowerCase()
-          .includes(param.toLowerCase().replace('in', '').replace('address', ''))
-      );
+      if (key === 'allowedMessagePrefixes' && params.message) {
+        // For SigningSimple, check message prefixes
+        const isAllowed = value.some((prefix: string) =>
+          params.message.startsWith(prefix)
+        );
 
-      if (paramKey) {
-        const paramValue = params[paramKey].toLowerCase();
-        const allowedValues = value.map((v: string) => v.toLowerCase());
-
-        if (!allowedValues.includes(paramValue)) {
+        if (!isAllowed) {
           throw new Error(
-            `${paramKey} ${params[paramKey]} is not in the allowed list`
+            `Message does not start with any of the allowed prefixes: ${value.join(
+              ', '
+            )}`
           );
+        }
+      } else {
+        // For other tools (SendERC20, SwapUniswap), check allowed values
+        const paramKey = Object.keys(params).find((param) =>
+          key
+            .toLowerCase()
+            .includes(param.toLowerCase().replace('in', '').replace('address', ''))
+        );
+
+        if (paramKey) {
+          const paramValue = params[paramKey].toLowerCase();
+          const allowedValues = value.map((v: string) => v.toLowerCase());
+
+          if (!allowedValues.includes(paramValue)) {
+            throw new Error(
+              `${paramKey} ${params[paramKey]} is not in the allowed list`
+            );
+          }
         }
       }
     }

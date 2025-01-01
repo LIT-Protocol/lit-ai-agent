@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../fss-tool-signing-simple"
+    },
+    {
       "path": "../fss-tool-swap-uniswap"
     },
     {

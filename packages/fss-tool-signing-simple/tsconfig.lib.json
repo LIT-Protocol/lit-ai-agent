@@ -6,24 +6,21 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "types": ["node"]
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "types": ["node"],
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "paths": {
+      "@lit-protocol/fss-tool-policy-base": ["../fss-tool-policy-base/src"]
+    }
   },
   "include": ["src/**/*.ts"],
   "references": [
     {
-      "path": "../fss-tool-signing-simple/tsconfig.lib.json"
-    },
-    {
-      "path": "../fss-tool-swap-uniswap/tsconfig.lib.json"
-    },
-    {
       "path": "../fss-tool-policy-base/tsconfig.lib.json"
-    },
-    {
-      "path": "../fss-tool-erc20-send/tsconfig.lib.json"
     }
   ],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
-}
+} 

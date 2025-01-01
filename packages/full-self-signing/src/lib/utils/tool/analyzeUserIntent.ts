@@ -14,6 +14,7 @@ export async function analyzeUserIntent(
   matchedTool: ToolInfo | null;
 }> {
   const availableTools = listAvailableTools();
+  console.log("availableTools", availableTools);
 
   const completion = await openai.chat.completions.create({
     model: openAiModel,

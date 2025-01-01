@@ -16,6 +16,9 @@
   "include": ["src/**/*.ts"],
   "references": [
     {
+      "path": "../fss-tool-signing-simple/tsconfig.lib.json"
+    },
+    {
       "path": "../fss-tool-swap-uniswap/tsconfig.lib.json"
     },
     {

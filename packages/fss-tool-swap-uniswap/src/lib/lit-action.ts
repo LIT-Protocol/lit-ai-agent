@@ -4,7 +4,6 @@ import type { BigNumber, Contract } from 'ethers';
 declare global {
   // Injected By Lit
   const Lit: any;
-  const LitAuth: any;
   const ethers: {
     providers: {
       JsonRpcProvider: any;
@@ -488,7 +487,6 @@ export default async () => {
 
     const UNISWAP_V3_QUOTER = "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a";
     const UNISWAP_V3_ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
-        
 
     const { 
       tokenInContract,
