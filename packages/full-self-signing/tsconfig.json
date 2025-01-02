@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../fss-tool-boilerplate"
+    },
+    {
       "path": "../fss-tool-signing-simple"
     },
     {

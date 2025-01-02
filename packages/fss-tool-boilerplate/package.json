@@ -1,0 +1,72 @@
+{
+  "name": "@lit-protocol/fss-tool-boilerplate",
+  "version": "0.0.1",
+  "dependencies": {
+    "@lit-protocol/fss-tool-policy-base": "workspace:*",
+    "ethers": "^5.7.2",
+    "zod": "^3.24.1",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^1.31.3",
+    "esbuild": "^0.19.11",
+    "node-fetch": "^2.7.0"
+  },
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "sourceRoot": "packages/fss-tool-boilerplate/src",
+    "projectType": "library",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/fss-tool-boilerplate/dist",
+          "main": "packages/fss-tool-boilerplate/src/index.ts",
+          "tsConfig": "packages/fss-tool-boilerplate/tsconfig.lib.json",
+          "assets": [
+            "packages/fss-tool-boilerplate/*.md"
+          ]
+        }
+      },
+      "build:action": {
+        "executor": "nx:run-commands",
+        "dependsOn": ["build"],
+        "options": {
+          "commands": ["node tools/scripts/build-lit-action.js"],
+          "cwd": "packages/fss-tool-boilerplate",
+          "parallel": false
+        },
+        "outputs": [
+          "{workspaceRoot}/packages/fss-tool-boilerplate/dist/deployed-lit-action.js"
+        ]
+      },
+      "deploy": {
+        "executor": "nx:run-commands",
+        "dependsOn": ["build:action"],
+        "options": {
+          "commands": ["node tools/scripts/deploy-lit-action.js"],
+          "cwd": "packages/fss-tool-boilerplate"
+        }
+      },
+      "publish": {
+        "executor": "@nx/js:npm-publish",
+        "dependsOn": ["deploy"],
+        "options": {
+          "packageRoot": "dist"
+        }
+      }
+    },
+    "name": "fss-tool-boilerplate"
+  }
+}
+
+

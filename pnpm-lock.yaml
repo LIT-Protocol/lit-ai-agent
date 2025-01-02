@@ -152,6 +152,31 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
 
+  packages/fss-tool-boilerplate:
+    dependencies:
+      '@lit-protocol/fss-tool-policy-base':
+        specifier: workspace:*
+        version: link:../fss-tool-policy-base
+      ethers:
+        specifier: ^5.7.2
+        version: 5.7.2
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      '@dotenvx/dotenvx':
+        specifier: ^1.31.3
+        version: 1.31.3
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      node-fetch:
+        specifier: ^2.7.0
+        version: 2.7.0
+
   packages/fss-tool-erc20-send:
     dependencies:
       '@lit-protocol/fss-tool-policy-base':
@@ -188,6 +213,9 @@ importers:
 
   packages/fss-tool-registry:
     dependencies:
+      '@lit-protocol/fss-tool-boilerplate':
+        specifier: workspace:*
+        version: link:../fss-tool-boilerplate
       '@lit-protocol/fss-tool-erc20-send':
         specifier: workspace:*
         version: link:../fss-tool-erc20-send

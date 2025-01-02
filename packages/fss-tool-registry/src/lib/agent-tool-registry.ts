@@ -116,7 +116,11 @@ export const SigningSimple = {
   },
 } as const;
 
-export const SUPPORTED_TOOLS = ['SendERC20', 'SwapUniswap', 'SigningSimple'] as const;
+export const SUPPORTED_TOOLS = [
+  'SendERC20',
+  'SwapUniswap',
+  'SigningSimple'
+] as const;
 export type SupportedToolTypes = (typeof SUPPORTED_TOOLS)[number];
 
 export interface ToolInfo {

@@ -61,10 +61,7 @@ export interface ExecuteJsParams {
  * Options for setting a tool policy
  */
 export interface ToolPolicyData {
-  type: string;
-  version: string;
   maxAmount?: string;
-  maxGasLimit?: string;
   allowedTokens?: string[];
   allowedRecipients?: string[];
   allowedMessagePrefixes?: string[];

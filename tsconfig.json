@@ -26,6 +26,9 @@
     },
     {
       "path": "./packages/fss-tool-signing-simple"
+    },
+    {
+      "path": "./packages/fss-tool-boilerplate"
     }
   ]
 }

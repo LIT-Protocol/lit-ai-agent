@@ -8,6 +8,7 @@
     "@lit-protocol/fss-tool-erc20-send": "workspace:*",
     "@lit-protocol/fss-tool-swap-uniswap": "workspace:*",
     "@lit-protocol/fss-tool-signing-simple": "workspace:*",
+    "@lit-protocol/fss-tool-boilerplate": "workspace:*",
     "ethers": "5.7.2",
     "tslib": "^2.3.0"
   },

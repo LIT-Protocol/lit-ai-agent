@@ -74,36 +74,57 @@ export async function setToolPolicy(
     let encodedPolicy;
 
     // Handle different policy types
-    if (policy.type === 'SigningSimple') {
-      // Encode SigningSimple policy - only needs allowedMessagePrefixes
-      encodedPolicy = ethers.utils.defaultAbiCoder.encode(
-        ['tuple(string[] allowedMessagePrefixes)'],
-        [{
-          allowedMessagePrefixes: policy.allowedMessagePrefixes || [],
-        }]
-      );
-    } else {
-      // Default case for SendERC20 and SwapUniswap
-      const maxAmount = ethers.BigNumber.from(policy.maxAmount);
-      const allowedTokens = (policy.allowedTokens || []).map((addr: string) =>
-        ethers.utils.getAddress(addr)
-      );
-      const allowedRecipients = (policy.allowedRecipients || []).map(
-        (addr: string) => ethers.utils.getAddress(addr)
-      );
+    let maxAmount, allowedTokens;
+    switch(policy.type) {
+      case 'SigningSimple':
+          encodedPolicy = ethers.utils.defaultAbiCoder.encode(
+            ['tuple(string[] allowedMessagePrefixes)'],
+            [{
+              allowedMessagePrefixes: policy.allowedMessagePrefixes || [],
+            }]
+          );
+          break;
+      
+      case 'SwapUniswap':
+        maxAmount = ethers.BigNumber.from(policy.maxAmount);
+        allowedTokens = (policy.allowedTokens || []).map((addr: string) =>
+          ethers.utils.getAddress(addr)
+        );
+        encodedPolicy = ethers.utils.defaultAbiCoder.encode(
+          [
+            'tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)',
+          ],
+          [
+            {
+              maxAmount,
+              allowedTokens,
+            },
+          ]
+        );
+        break;
 
-      encodedPolicy = ethers.utils.defaultAbiCoder.encode(
-        [
-          'tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)',
-        ],
-        [
-          {
-            maxAmount,
-            allowedTokens,
-            allowedRecipients,
-          },
-        ]
-      );
+      default:
+        // Default case for SendERC20 and SwapUniswap
+        maxAmount = ethers.BigNumber.from(policy.maxAmount);
+        allowedTokens = (policy.allowedTokens || []).map((addr: string) =>
+          ethers.utils.getAddress(addr)
+        );
+        const allowedRecipients = (policy.allowedRecipients || []).map(
+          (addr: string) => ethers.utils.getAddress(addr)
+        );
+
+        encodedPolicy = ethers.utils.defaultAbiCoder.encode(
+          [
+            'tuple(uint256 maxAmount, address[] allowedTokens, address[] allowedRecipients)',
+          ],
+          [
+            {
+              maxAmount,
+              allowedTokens,
+              allowedRecipients,
+            },
+          ]
+        );
     }
 
     // Encode the function call

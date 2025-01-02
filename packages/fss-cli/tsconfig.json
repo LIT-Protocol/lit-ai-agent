@@ -7,6 +7,9 @@
       "path": "../full-self-signing"
     },
     {
+      "path": "../fss-tool-boilerplate"
+    },
+    {
       "path": "../fss-tool-signing-simple"
     },
     {
